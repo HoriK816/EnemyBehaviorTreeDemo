@@ -18,6 +18,45 @@ void setup(){
   size(1200,900);
 
   frameRate(FRAME_RATE);
+
+  testBehaviorTree();
+
+}
+
+// this is a test method for the Behavior Tree
+void testBehaviorTree(){
+  BehaviorTreeNode root = new BehaviorTreeNode("root"); 
+  root.printName();
+
+  // tree test (debug)
+  /*
+  BehaviorTreeNode left_child = new BehaviorTreeNode("left");
+  BehaviorTreeNode right_child = new BehaviorTreeNode("right");
+  root.addChild(left_child);
+  root.addChild(right_child);
+
+  root.printAllChildren();
+
+  */
+
+  // leaf node test (debug)
+  DummyAction action_1 = new DummyAction("dummy 1", 10);
+  DummyAction action_2 = new DummyAction("dummy 2", 10);
+  root.addLeafChildren(action_1);
+  root.addLeafChildren(action_2);
+
+  // action node test (debug)
+  Walk walk = new Walk();
+  Attack attack = new Attack();
+  root.addLeafChildren(walk);
+  root.addLeafChildren(attack);
+
+  // condition node test (debug)
+  DummyCondition dummy_condition = new DummyCondition("sum checker");
+  root.addLeafChildren(dummy_condition);
+
+  root.executeAllLeaf();
+
 }
 
 
