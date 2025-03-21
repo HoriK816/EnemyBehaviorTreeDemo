@@ -13,6 +13,10 @@ Enemy enemy = new Enemy(250, 100);
 ArrayList<Bullet> enemy_bullets = new ArrayList<Bullet>();
 ArrayList<Bullet> player_bullets = new ArrayList<Bullet>();
 
+// test node for BT
+SequenceNode root = new SequenceNode("root"); 
+boolean is_finished = false;
+
 void setup(){
   // cannot use variables to specify the window size on size() 
   size(1200,900);
@@ -25,7 +29,6 @@ void setup(){
 
 // this is a test method for the Behavior Tree
 void testBehaviorTree(){
-  ControlNode root = new ControlNode("root"); 
   root.printName();
 
   // tree test (debug)
@@ -55,7 +58,21 @@ void testBehaviorTree(){
   DummyCondition dummy_condition = new DummyCondition("sum checker");
   root.addLeafChildren(dummy_condition);
 
-  root.executeAllLeaf();
+
+}
+
+// this is a test method for the Sequence Tree
+void testSeqenceTree(){
+  if(is_finished){
+    return;
+  }
+  
+  // println("execute something");
+  NodeStatus result = root.executeAllChildren();
+ 
+  if(result == NodeStatus.SUCCESS){
+    is_finished = true;
+  }
 
 }
 
@@ -77,6 +94,8 @@ void draw(){
   enemy.draw();
   draw_bullets();
 
+  // test the Sequence Tree
+  testSeqenceTree();
 }
 
 

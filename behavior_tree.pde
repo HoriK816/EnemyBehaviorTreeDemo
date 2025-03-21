@@ -1,5 +1,5 @@
 enum NodeStatus{
-  SUCESS, FAILURE, RUNNING;
+  SUCCESS, FAILURE, RUNNING;
 }
 
 enum Direction{
@@ -62,10 +62,50 @@ class ControlNode extends BehaviorTreeNode{
 
 class SequenceNode extends ControlNode{
 
-  SequenceNode(String node_name){
-    super(node_name);
-  }
+  int number_children;
+  int number_executed;
 
+  SequenceNode(String node_name){
+
+    super(node_name);
+    number_executed  = 0;
+
+
+  }
+ 
+  // TODO : handle the case the target includes control node 
+  // this implementation cannot handle those cases...
+  NodeStatus executeAllChildren(){
+
+    number_children = this.leaf_children.size();
+
+    NodeStatus sequence_status = null;
+
+    if(number_executed == number_children){
+      sequence_status = NodeStatus.SUCCESS;
+
+    }else{
+
+      // check the leaf currently being processed
+      LeafNode process_leaf = leaf_children.get(number_executed);
+      NodeStatus leaf_result = process_leaf.evalLeaf();
+  
+      switch(leaf_result){
+          case SUCCESS:
+            number_executed++;
+            sequence_status = NodeStatus.RUNNING;
+            break;
+          case FAILURE:
+            sequence_status = NodeStatus.FAILURE;
+            break;
+          case RUNNING:
+            sequence_status = NodeStatus.RUNNING;
+            break;
+      }
+    }
+
+    return sequence_status;
+  }
 
 }
 
@@ -80,6 +120,7 @@ class LeafNode{
   }
 
   NodeStatus evalLeaf(){
+    // println("evalleaf() was called on LeafNode");
     return null;
   }
 }
@@ -97,7 +138,7 @@ class ConditionNode extends LeafNode{
 
   void checkCondition(){
     if(is_met){
-      status =  NodeStatus.SUCESS;
+      status =  NodeStatus.SUCCESS;
     }else{
       status =  NodeStatus.FAILURE;
     }
@@ -105,6 +146,7 @@ class ConditionNode extends LeafNode{
 
   @Override
   NodeStatus evalLeaf(){
+    // println("evalLeaf() was called on ConditionNode");
     checkCondition();
     return this.status;
   }
@@ -156,12 +198,13 @@ class ActionNode extends LeafNode{
       return NodeStatus.RUNNING;
     }
     else{
-      return NodeStatus.SUCESS;
+      return NodeStatus.SUCCESS;
     }
   }
 
   @Override
   NodeStatus evalLeaf(){
+    // println("evalLeaf() was called on ActionNode");
     NodeStatus status;
     status = this.Action();
     return status;
