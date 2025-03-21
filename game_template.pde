@@ -25,7 +25,7 @@ void setup(){
 
 // this is a test method for the Behavior Tree
 void testBehaviorTree(){
-  BehaviorTreeNode root = new BehaviorTreeNode("root"); 
+  ControlNode root = new ControlNode("root"); 
   root.printName();
 
   // tree test (debug)

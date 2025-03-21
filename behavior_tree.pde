@@ -11,16 +11,29 @@ class BehaviorTreeNode{
   int id; // do you use it?
   String name;
   NodeStatus status;
-  ArrayList<BehaviorTreeNode> children;
-  ArrayList<LeafNode> leaf_children;
 
   BehaviorTreeNode(String node_name){
     name = node_name;
+  }
+
+  // for debug 
+  void printName(){
+    println("the name of this node is ", name); 
+  }
+
+}
+
+class ControlNode extends BehaviorTreeNode{
+
+  ArrayList<BehaviorTreeNode> children;
+  ArrayList<LeafNode> leaf_children;
+
+  ControlNode(String node_name){
+    super(node_name);
 
     // TODO : should be unified into one ... 
     children = new ArrayList<BehaviorTreeNode>();
     leaf_children = new ArrayList<LeafNode>();
-
   }
 
   void addChild(BehaviorTreeNode new_node){
@@ -29,12 +42,7 @@ class BehaviorTreeNode{
 
   void addLeafChildren(LeafNode new_leaf){
     leaf_children.add(new_leaf);
-  }
-
-  // for debug 
-  void printName(){
-    println("the name of this node is ", name); 
-  }
+  } 
 
   void printAllChildren(){
     int len = children.size();
@@ -50,6 +58,15 @@ class BehaviorTreeNode{
       leaf_children.get(i).evalLeaf();
     }
   }
+}
+
+class SequenceNode extends ControlNode{
+
+  SequenceNode(String node_name){
+    super(node_name);
+  }
+
+
 }
 
 
