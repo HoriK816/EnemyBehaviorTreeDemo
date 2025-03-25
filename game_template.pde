@@ -14,8 +14,8 @@ ArrayList<Bullet> enemy_bullets = new ArrayList<Bullet>();
 ArrayList<Bullet> player_bullets = new ArrayList<Bullet>();
 
 // test node for BT
-// SequenceNode root = new SequenceNode("root"); 
-SelectorNode root = new SelectorNode("root");
+SequenceNode root = new SequenceNode("root"); 
+// SelectorNode root = new SelectorNode("root");
 
 boolean is_finished = false;
 
@@ -47,38 +47,39 @@ void testBehaviorTree(){
   // leaf node test (debug)
   DummyAction action_1 = new DummyAction("dummy 1", 10);
   DummyAction action_2 = new DummyAction("dummy 2", 10);
-  root.addLeafChildren(action_1);
-  root.addLeafChildren(action_2);
+  root.addChild(action_1);
+  root.addChild(action_2);
 
   // action node test (debug)
   Walk walk = new Walk();
   Attack attack = new Attack();
-  root.addLeafChildren(walk);
-  root.addLeafChildren(attack);
+  root.addChild(walk);
+  root.addChild(attack);
 
   // condition node test (debug)
   DummyCondition dummy_condition = new DummyCondition("sum checker");
-  root.addLeafChildren(dummy_condition);
+  root.addChild(dummy_condition);
 
+  root.printAllChildren();
 
 }
 
 // this is a test method for the Sequence Tree
-/*
-void testSeqenceTree(){
+
+void testSequenceTree(){
   if(is_finished){
     return;
   }
   
-  // println("execute something");
-  NodeStatus result = root.executeAllChildren();
+  println("execute something");
+  NodeStatus result = root.evalNode();
  
   if(result == NodeStatus.SUCCESS){
     is_finished = true;
   }
 
 }
-*/
+
 
 
 // this is a test method for the Selecter Tree
@@ -87,7 +88,7 @@ void testSelectorTree(){
     return;
   }
 
-  NodeStatus result = root.executeChildren();
+  NodeStatus result = root.evalNode();
 
   if(result == NodeStatus.SUCCESS){
     is_finished = true;
@@ -95,6 +96,11 @@ void testSelectorTree(){
 
 }
 
+
+void testInverter(){
+
+    return;
+}
 
 void draw(){
   background(0,0,0);
@@ -114,10 +120,10 @@ void draw(){
   draw_bullets();
 
   // test the Sequence Tree
-  // testSeqenceTree();
+  testSequenceTree();
   
   // test the Selector Tree
-  testSelectorTree();
+  // testSelectorTree();
 }
 
 

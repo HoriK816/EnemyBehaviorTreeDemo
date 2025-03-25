@@ -21,12 +21,18 @@ class BehaviorTreeNode{
     println("the name of this node is ", name); 
   }
 
+
+  // deribative classes should override this method
+  NodeStatus evalNode(){
+    return null;
+  }
+  
+
 }
 
 class ControlNode extends BehaviorTreeNode{
 
   ArrayList<BehaviorTreeNode> children;
-  ArrayList<LeafNode> leaf_children;
 
   ControlNode(String node_name){
     super(node_name);
@@ -40,10 +46,6 @@ class ControlNode extends BehaviorTreeNode{
     children.add(new_node);  
   }
 
-  void addLeafChildren(LeafNode new_leaf){
-    leaf_children.add(new_leaf);
-  } 
-
   void printAllChildren(){
     int len = children.size();
     for(int i=0; i<len; i++){
@@ -51,13 +53,6 @@ class ControlNode extends BehaviorTreeNode{
     }
   }
 
-  void executeAllLeaf(){
-    int len = leaf_children.size();
-
-    for(int i=0; i<len; i++){
-      leaf_children.get(i).evalLeaf();
-    }
-  }
 }
 
 class SequenceNode extends ControlNode{
@@ -70,14 +65,12 @@ class SequenceNode extends ControlNode{
     super(node_name);
     number_executed  = 0;
 
-
   }
- 
-  // TODO : handle the case the target includes control node 
-  // this implementation cannot handle those cases...
-  NodeStatus executeAllChildren(){
 
-    number_children = this.leaf_children.size();
+  NodeStatus executeAllChildren(){
+    // println("executeAllChildren");
+
+    number_children = this.children.size();
 
     NodeStatus sequence_status = null;
 
@@ -87,10 +80,10 @@ class SequenceNode extends ControlNode{
     }else{
 
       // check the leaf currently being processed
-      LeafNode process_leaf = leaf_children.get(number_executed);
-      NodeStatus leaf_result = process_leaf.evalLeaf();
+      BehaviorTreeNode process_node = children.get(number_executed);
+      NodeStatus process_result = process_node.evalNode();
   
-      switch(leaf_result){
+      switch(process_result){
         case SUCCESS:
           number_executed++;
           sequence_status = NodeStatus.RUNNING;
@@ -107,6 +100,13 @@ class SequenceNode extends ControlNode{
     return sequence_status;
   }
 
+  @Override
+  NodeStatus evalNode(){
+    NodeStatus result;
+    result = this.executeAllChildren();
+    return result;
+  }
+
 }
 
 class SelectorNode extends ControlNode{
@@ -118,8 +118,10 @@ class SelectorNode extends ControlNode{
     super(node_name);
     number_executed = 0;
   }
-  
- 
+
+
+  // remove this method, when another executeChildren() have been debugged 
+  /* 
   NodeStatus executeChildren(){
 
     number_children = this.leaf_children.size();
@@ -151,21 +153,110 @@ class SelectorNode extends ControlNode{
     }
     return selector_status;
   }
+  */
+
+  // migrated target
+  NodeStatus executeChildren(){
+
+    number_children = this.children.size();
+
+    NodeStatus selector_status = null;
+
+    
+    BehaviorTreeNode process_node = children.get(number_executed);
+    NodeStatus node_result = process_node.evalNode();
+ 
+    if(number_executed == number_children){
+      // reaching the final node means that no node returns SUCCESS
+      selector_status = NodeStatus.FAILURE;
+
+    }else{
+
+      switch(node_result){
+        case SUCCESS:
+          selector_status = NodeStatus.SUCCESS;
+          break;
+        case FAILURE:
+          number_executed++;
+          selector_status = NodeStatus.RUNNING;
+          break;
+        case RUNNING:
+          selector_status = NodeStatus.RUNNING;
+          break;
+        }
+
+    }
+    return selector_status;
+  }
+
+  @Override
+  NodeStatus evalNode(){
+    NodeStatus result;
+    result = executeChildren();
+    return result;
+  }
+
 
 }
 
 
-class LeafNode{
-  int id; // do you use it?
-  String name;
+class DecoratorNode extends BehaviorTreeNode{
+
+  BehaviorTreeNode child;
+
+  DecoratorNode(String node_name){
+    super(node_name);
+  }
+
+  void addChild(BehaviorTreeNode new_node){
+    child = new_node;
+  }
+
+}
+
+class InverterNode extends DecoratorNode{
+
+  InverterNode(String node_name){
+    super(node_name);
+
+  }
+
+  @Override
+  NodeStatus evalNode(){
+    NodeStatus result;
+    result = child.evalNode();
+
+    switch(result){
+      case SUCCESS:
+        result = NodeStatus.FAILURE; 
+        break;
+      case FAILURE:
+        result = NodeStatus.SUCCESS;
+        break;
+      case RUNNING:
+        result = NodeStatus.RUNNING;
+        break;
+    }
+    return result;
+  }
+
+}
+
+class LeafNode extends BehaviorTreeNode{ 
+
   NodeStatus status;
   
   LeafNode(String node_name){
-    name = node_name;
+    super(node_name);
   }
 
+  // should migrate to evalNode()
   NodeStatus evalLeaf(){
     // println("evalleaf() was called on LeafNode");
+    return null;
+  }
+
+  NodeStatus evalNode(){
     return null;
   }
 }
@@ -195,6 +286,13 @@ class ConditionNode extends LeafNode{
     checkCondition();
     return this.status;
   }
+
+  @Override
+  NodeStatus evalNode(){
+    checkCondition();
+    return this.status; 
+  }
+
 }
 
 class DummyCondition extends ConditionNode{
@@ -253,6 +351,14 @@ class ActionNode extends LeafNode{
     NodeStatus status;
     status = this.Action();
     return status;
+  }
+
+  @Override 
+  NodeStatus evalNode(){
+    NodeStatus result;
+    result = this.Action();
+    return result;
+
   }
 
 }
