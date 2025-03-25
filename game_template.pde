@@ -190,13 +190,28 @@ class Enemy{
   color enemy_color = color(255, 255, 0); // purple 
 
   PVector position; // two dimensions. (x, y).
+  int speed = 10;
 
   Enemy(float x, float y){
     position = new PVector(x, y);
   }
 
-  void move(){
-    return;
+  void move(Direction direction){
+    switch(direction){
+      case UP:
+        position.y -= speed;
+        break;
+      case LEFT:
+        position.x -= speed;
+        break;
+      case RIGHT:
+        position.x += speed;
+        break;
+      case DOWN:
+        position.y += speed;
+        break;
+    }
+
   }
 
   void draw(){
@@ -223,6 +238,8 @@ class Bullet{
                                                  
   PVector position;
   PVector move_vector;
+
+  Direction move_direction;
 
 
   Bullet(float px, float py, float speed, float angle){
