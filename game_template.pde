@@ -14,7 +14,9 @@ ArrayList<Bullet> enemy_bullets = new ArrayList<Bullet>();
 ArrayList<Bullet> player_bullets = new ArrayList<Bullet>();
 
 // test node for BT
-SequenceNode root = new SequenceNode("root"); 
+// SequenceNode root = new SequenceNode("root"); 
+SelectorNode root = new SelectorNode("root");
+
 boolean is_finished = false;
 
 void setup(){
@@ -62,6 +64,7 @@ void testBehaviorTree(){
 }
 
 // this is a test method for the Sequence Tree
+/*
 void testSeqenceTree(){
   if(is_finished){
     return;
@@ -70,6 +73,22 @@ void testSeqenceTree(){
   // println("execute something");
   NodeStatus result = root.executeAllChildren();
  
+  if(result == NodeStatus.SUCCESS){
+    is_finished = true;
+  }
+
+}
+*/
+
+
+// this is a test method for the Selecter Tree
+void testSelectorTree(){
+  if(is_finished){
+    return;
+  }
+
+  NodeStatus result = root.executeChildren();
+
   if(result == NodeStatus.SUCCESS){
     is_finished = true;
   }
@@ -95,7 +114,10 @@ void draw(){
   draw_bullets();
 
   // test the Sequence Tree
-  testSeqenceTree();
+  // testSeqenceTree();
+  
+  // test the Selector Tree
+  testSelectorTree();
 }
 
 

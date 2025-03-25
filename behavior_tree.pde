@@ -91,20 +91,65 @@ class SequenceNode extends ControlNode{
       NodeStatus leaf_result = process_leaf.evalLeaf();
   
       switch(leaf_result){
-          case SUCCESS:
-            number_executed++;
-            sequence_status = NodeStatus.RUNNING;
-            break;
-          case FAILURE:
-            sequence_status = NodeStatus.FAILURE;
-            break;
-          case RUNNING:
-            sequence_status = NodeStatus.RUNNING;
-            break;
+        case SUCCESS:
+          number_executed++;
+          sequence_status = NodeStatus.RUNNING;
+          break;
+        case FAILURE:
+          sequence_status = NodeStatus.FAILURE;
+          break;
+        case RUNNING:
+          sequence_status = NodeStatus.RUNNING;
+          break;
       }
     }
 
     return sequence_status;
+  }
+
+}
+
+class SelectorNode extends ControlNode{
+
+  int number_children;
+  int number_executed;
+    
+  SelectorNode(String node_name){
+    super(node_name);
+    number_executed = 0;
+  }
+  
+ 
+  NodeStatus executeChildren(){
+
+    number_children = this.leaf_children.size();
+
+    NodeStatus selector_status = null;
+
+    LeafNode process_leaf = leaf_children.get(number_executed);
+    NodeStatus leaf_result = process_leaf.evalLeaf();
+ 
+    if(number_executed == number_children){
+      // reaching the final node means that no node returns SUCCESS
+      selector_status = NodeStatus.FAILURE;
+
+    }else{
+
+      switch(leaf_result){
+        case SUCCESS:
+          selector_status = NodeStatus.SUCCESS;
+          break;
+        case FAILURE:
+          number_executed++;
+          selector_status = NodeStatus.RUNNING;
+          break;
+        case RUNNING:
+          selector_status = NodeStatus.RUNNING;
+          break;
+        }
+
+    }
+    return selector_status;
   }
 
 }
