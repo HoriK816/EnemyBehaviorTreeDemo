@@ -14,8 +14,8 @@ ArrayList<Bullet> enemy_bullets = new ArrayList<Bullet>();
 ArrayList<Bullet> player_bullets = new ArrayList<Bullet>();
 
 // test node for BT
-SequenceNode root = new SequenceNode("root"); 
-// SelectorNode root = new SelectorNode("root");
+// SequenceNode root = new SequenceNode("root"); 
+SelectorNode root = new SelectorNode("root");
 
 boolean is_finished = false;
 
@@ -120,10 +120,10 @@ void draw(){
   draw_bullets();
 
   // test the Sequence Tree
-  testSequenceTree();
+  // testSequenceTree();
   
   // test the Selector Tree
-  // testSelectorTree();
+  testSelectorTree();
 }
 
 

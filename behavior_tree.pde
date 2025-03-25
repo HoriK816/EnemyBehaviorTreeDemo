@@ -39,7 +39,6 @@ class ControlNode extends BehaviorTreeNode{
 
     // TODO : should be unified into one ... 
     children = new ArrayList<BehaviorTreeNode>();
-    leaf_children = new ArrayList<LeafNode>();
   }
 
   void addChild(BehaviorTreeNode new_node){
@@ -119,43 +118,6 @@ class SelectorNode extends ControlNode{
     number_executed = 0;
   }
 
-
-  // remove this method, when another executeChildren() have been debugged 
-  /* 
-  NodeStatus executeChildren(){
-
-    number_children = this.leaf_children.size();
-
-    NodeStatus selector_status = null;
-
-    LeafNode process_leaf = leaf_children.get(number_executed);
-    NodeStatus leaf_result = process_leaf.evalLeaf();
- 
-    if(number_executed == number_children){
-      // reaching the final node means that no node returns SUCCESS
-      selector_status = NodeStatus.FAILURE;
-
-    }else{
-
-      switch(leaf_result){
-        case SUCCESS:
-          selector_status = NodeStatus.SUCCESS;
-          break;
-        case FAILURE:
-          number_executed++;
-          selector_status = NodeStatus.RUNNING;
-          break;
-        case RUNNING:
-          selector_status = NodeStatus.RUNNING;
-          break;
-        }
-
-    }
-    return selector_status;
-  }
-  */
-
-  // migrated target
   NodeStatus executeChildren(){
 
     number_children = this.children.size();
@@ -195,7 +157,6 @@ class SelectorNode extends ControlNode{
     result = executeChildren();
     return result;
   }
-
 
 }
 
