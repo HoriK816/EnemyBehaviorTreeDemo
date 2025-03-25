@@ -12,8 +12,8 @@ class MovePath{
   ArrayList<int> move_speed;
 
   MovePath(){
-    ArrayList<Direction> move_direction = new ArrayList<Direction>();
-    ArrayList<int> move_speed = new ArrayList<int>();
+    move_direction = new ArrayList<Direction>();
+    move_speed = new ArrayList<int>();
   }
 
   void addPath(Direction direction, int speed){
@@ -360,11 +360,6 @@ class EnemyWalk extends ActionNode{
 
   Enemy enemy;
   boolean route_calc_done = false;
-  
-
-  // should migrate into "Movepath"
-  ArrayList<PVector> route = new ArrayList<PVector>;
-
 
   MovePath path = new MovePath();
 
@@ -381,7 +376,7 @@ class EnemyWalk extends ActionNode{
       PVecotr dest = decideDestination(); 
       
       // are these parameter appropriate??? 
-      calcPath(enemy.position, enemy.speed);
+      calcPath(dest, enemy.position, enemy.speed);
 
       this.printPath();
     }
@@ -416,13 +411,13 @@ class EnemyWalk extends ActionNode{
   }
 
 
-  void calcPath(PVector current_position, int max_speed){
+  void calcPath(PVector dest, PVector current_position, int max_speed){
 
     boolean move_x_done = false;
     boolean move_y_done = false;
      
-    diff_x = dest.x - current_position.x 
-    diff_y = dest.y - current_position.y
+    diff_x = dest.x - current_position.x;
+    diff_y = dest.y - current_position.y;
   
     // x direction
     while(move_x_done){
@@ -443,7 +438,7 @@ class EnemyWalk extends ActionNode{
         }else{ // move to left
 
           if(abs(diff_x) < max_speed){ // move in one frame
-            path.addPath(Direction.LEFT, abs(diff_x))
+            path.addPath(Direction.LEFT, abs(diff_x));
             move_x_done = true;
 
           }else{
@@ -486,7 +481,6 @@ class EnemyWalk extends ActionNode{
     route_calc_done = true;
   }
 
-  }
 
 }
 
