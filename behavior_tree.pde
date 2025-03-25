@@ -8,7 +8,7 @@ enum Direction{
 
 
 class BehaviorTreeNode{
-  int id; // do you use it?
+
   String name;
   NodeStatus status;
 
@@ -21,12 +21,10 @@ class BehaviorTreeNode{
     println("the name of this node is ", name); 
   }
 
-
   // deribative classes should override this method
   NodeStatus evalNode(){
     return null;
   }
-  
 
 }
 
@@ -36,8 +34,6 @@ class ControlNode extends BehaviorTreeNode{
 
   ControlNode(String node_name){
     super(node_name);
-
-    // TODO : should be unified into one ... 
     children = new ArrayList<BehaviorTreeNode>();
   }
 
@@ -60,25 +56,21 @@ class SequenceNode extends ControlNode{
   int number_executed;
 
   SequenceNode(String node_name){
-
     super(node_name);
     number_executed  = 0;
-
   }
 
   NodeStatus executeAllChildren(){
-    // println("executeAllChildren");
-
-    number_children = this.children.size();
 
     NodeStatus sequence_status = null;
 
+    number_children = this.children.size();
+
     if(number_executed == number_children){
       sequence_status = NodeStatus.SUCCESS;
-
     }else{
 
-      // check the leaf currently being processed
+      // check the child node currently being processed
       BehaviorTreeNode process_node = children.get(number_executed);
       NodeStatus process_result = process_node.evalNode();
   
@@ -95,7 +87,6 @@ class SequenceNode extends ControlNode{
           break;
       }
     }
-
     return sequence_status;
   }
 
@@ -120,14 +111,13 @@ class SelectorNode extends ControlNode{
 
   NodeStatus executeChildren(){
 
-    number_children = this.children.size();
-
     NodeStatus selector_status = null;
 
-    
     BehaviorTreeNode process_node = children.get(number_executed);
     NodeStatus node_result = process_node.evalNode();
  
+    number_children = this.children.size();
+
     if(number_executed == number_children){
       // reaching the final node means that no node returns SUCCESS
       selector_status = NodeStatus.FAILURE;
@@ -146,7 +136,6 @@ class SelectorNode extends ControlNode{
           selector_status = NodeStatus.RUNNING;
           break;
         }
-
     }
     return selector_status;
   }
@@ -167,10 +156,6 @@ class DecoratorNode extends BehaviorTreeNode{
 
   DecoratorNode(String node_name){
     super(node_name);
-  }
-
-  void addChild(BehaviorTreeNode new_node){
-    child = new_node;
   }
 
 }
@@ -211,12 +196,6 @@ class LeafNode extends BehaviorTreeNode{
     super(node_name);
   }
 
-  // should migrate to evalNode()
-  NodeStatus evalLeaf(){
-    // println("evalleaf() was called on LeafNode");
-    return null;
-  }
-
   NodeStatus evalNode(){
     return null;
   }
@@ -239,13 +218,6 @@ class ConditionNode extends LeafNode{
     }else{
       status =  NodeStatus.FAILURE;
     }
-  }
-
-  @Override
-  NodeStatus evalLeaf(){
-    // println("evalLeaf() was called on ConditionNode");
-    checkCondition();
-    return this.status;
   }
 
   @Override
@@ -306,14 +278,6 @@ class ActionNode extends LeafNode{
     }
   }
 
-  @Override
-  NodeStatus evalLeaf(){
-    // println("evalLeaf() was called on ActionNode");
-    NodeStatus status;
-    status = this.Action();
-    return status;
-  }
-
   @Override 
   NodeStatus evalNode(){
     NodeStatus result;
@@ -328,7 +292,6 @@ class ActionNode extends LeafNode{
 // test action (debug)
 class DummyAction extends ActionNode{
 
- 
   DummyAction(String node_name, int required_time){
     super(node_name, required_time);
   }
