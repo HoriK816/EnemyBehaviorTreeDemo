@@ -6,6 +6,34 @@ enum Direction{
   UP, LEFT, RIGHT, DOWN;
 }
 
+class MovePath{
+
+  ArrayList<Direction> move_direction;
+  ArrayList<int> move_speed;
+
+  MovePath(){
+    ArrayList<Direction> move_direction = new ArrayList<Direction>();
+    ArrayList<int> move_speed = new ArrayList<int>();
+  }
+
+  void addPath(Direction direction, int speed){
+    this.move_direction.add(direction); 
+    this.move_speed.add(speed); 
+  }
+
+  // for debugging
+  void printAllPath(){
+    for(int i = 0; i<move_direction.size(); i++){
+
+      Direction direction = move_direction.get(i);
+      int speed = move_speed.get(i);
+
+      println("(", direction, ", ", speed,")");
+    }
+  }
+
+}
+
 
 class BehaviorTreeNode{
 
@@ -327,6 +355,141 @@ class Walk extends ActionNode{
   }
 
 }
+
+class EnemyWalk extends ActionNode{
+
+  Enemy enemy;
+  boolean route_calc_done = false;
+  
+
+  // should migrate into "Movepath"
+  ArrayList<PVector> route = new ArrayList<PVector>;
+
+
+  MovePath path = new MovePath();
+
+
+  EnemyWalk(String action_name, int required_time, Enemy enemy){
+    this.enemy = enemy;
+    super("walk",30);
+  }
+
+
+  @Override
+  NodeStatus Action(){
+    if(!route_calc_done){
+      PVecotr dest = decideDestination(); 
+      
+      // are these parameter appropriate??? 
+      calcPath(enemy.position, enemy.speed);
+
+      this.printPath();
+    }
+
+    
+    // for debugging
+    NodeStatus status = NodeStatus.SUCCESS;
+
+    // it's correct behavior that calls super.
+    /* 
+    NodeStatus status = super.Action(); 
+    */
+
+
+    return status;
+  }
+
+
+  PVector decideDestination(){
+
+    dest_x = random(0, WINDOW_WIDTH);
+    dest_y = random(0, WIDNWO_HEIGHT);
+
+    dest = new PVector(dest_x, dest_y);
+    return dest;
+
+  }
+
+
+  void printPath(){
+    this.path.printAllPath();
+  }
+
+
+  void calcPath(PVector current_position, int max_speed){
+
+    boolean move_x_done = false;
+    boolean move_y_done = false;
+     
+    diff_x = dest.x - current_position.x 
+    diff_y = dest.y - current_position.y
+  
+    // x direction
+    while(move_x_done){
+
+        if(dif_x == 0){ // no need to move
+          move_x_done = true;
+
+        }else if(0 < diff_x){ // move to right
+
+          if(abs(diff_x) < max_speed){ // move in one frame
+            path.addPath(Direction.RIGHT, abs(diff_x));
+            move_x_done = true;
+
+          }else{
+            path.addPath(Direction.RIGHT, max_speed);
+          }
+
+        }else{ // move to left
+
+          if(abs(diff_x) < max_speed){ // move in one frame
+            path.addPath(Direction.LEFT, abs(diff_x))
+            move_x_done = true;
+
+          }else{
+            path.addPath(Direction.Left, max_speed);
+          }
+
+        }
+    }
+
+    // y direction
+    while(move_y_done){
+
+        if(dif_y == 0){
+          move_y_done = true;
+
+        }else if(0 < diff_y){ // move to down
+
+          if(abs(diff_y) < max_speed){ // move in one frame
+            path.addPath(Direction.DOWN, abs(diff_y));
+            move_y_done = true;
+
+          }else{
+            path.addPath(Direction.DOWN, max_speed);
+          }
+
+        }else{ // move to up
+      
+          if(abs(diff_y)< max_speed){ // move in one frame
+            path.addPath(Direction.UP, abs(diff_y));
+            move_y_done = true;
+
+          }else{
+            path.addPath(Direction.UP,  max_speed);
+          }
+
+        }
+
+    }
+  
+    route_calc_done = true;
+  }
+
+  }
+
+}
+
 
 class Attack extends ActionNode{
 

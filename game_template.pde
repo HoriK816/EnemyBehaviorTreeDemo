@@ -25,7 +25,9 @@ void setup(){
 
   frameRate(FRAME_RATE);
 
-  testBehaviorTree();
+  // testBehaviorTree();
+
+  testCalcPath();
 
 }
 
@@ -80,8 +82,6 @@ void testSequenceTree(){
 
 }
 
-
-
 // this is a test method for the Selecter Tree
 void testSelectorTree(){
   if(is_finished){
@@ -96,11 +96,21 @@ void testSelectorTree(){
 
 }
 
-
+// TODO : Debug an inverter node !!!!
+// this is a test method for an Inverter node
 void testInverter(){
 
     return;
 }
+
+// this is a test method 
+void testCalcPath(){
+   EnemyWalk enemy_walk = new EnemyWalk("enemy walk", 30, enemy); 
+   enemy_walk.Action();
+
+}
+
+
 
 void draw(){
   background(0,0,0);
@@ -123,7 +133,7 @@ void draw(){
   // testSequenceTree();
   
   // test the Selector Tree
-  testSelectorTree();
+  // testSelectorTree();
 }
 
 
@@ -190,13 +200,13 @@ class Enemy{
   color enemy_color = color(255, 255, 0); // purple 
 
   PVector position; // two dimensions. (x, y).
-  int speed = 10;
+  int max_speed = 10;
 
   Enemy(float x, float y){
     position = new PVector(x, y);
   }
 
-  void move(Direction direction){
+  void move(Direction direction, int speed){
     switch(direction){
       case UP:
         position.y -= speed;
