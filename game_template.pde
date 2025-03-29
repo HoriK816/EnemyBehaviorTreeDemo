@@ -26,9 +26,9 @@ void setup(){
   frameRate(FRAME_RATE);
 
   // testBehaviorTree();
+  // testCalcPath();
 
-  testCalcPath();
-
+  testInverter();
 }
 
 // this is a test method for the Behavior Tree
@@ -100,7 +100,24 @@ void testSelectorTree(){
 // this is a test method for an Inverter node
 void testInverter(){
 
-    return;
+  root.printName();
+
+  DummyAction action_1 = new DummyAction("dummy 1", 0);
+
+  InverterNode inv1 = new InverterNode("inverter 1");
+  InverterNode inv2 = new InverterNode("inverter 2");
+
+  root.addChild(inv1);
+  inv1.setChild(inv2);
+  inv2.setChild(action_1);
+
+  NodeStatus result = root.evalNode();
+  if(result == NodeStatus.SUCCESS){
+    println("inverter is worked!");
+  }else{
+    println("inverter is not worked...");
+  }
+  return;
 }
 
 // this is a test method 

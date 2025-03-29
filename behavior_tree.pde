@@ -2,6 +2,7 @@ enum NodeStatus{
   SUCCESS, FAILURE, RUNNING;
 }
 
+
 class BehaviorTreeNode{
 
   String name;
@@ -156,7 +157,12 @@ class DecoratorNode extends BehaviorTreeNode{
     super(node_name);
   }
 
+  void setChild(BehaviorTreeNode new_node){
+    this.child = new_node;
+  }
+
 }
+
 
 class InverterNode extends DecoratorNode{
 
@@ -184,6 +190,60 @@ class InverterNode extends DecoratorNode{
     return result;
   }
 
+}
+
+
+class RepeaterNode extends DecoratorNode{
+
+  int repeat_times;
+
+  RepeaterNode(String node_name, int repeat_times){
+    super(node_name);
+    this.repeat_times = repeat_times;
+  }
+
+  @Override
+  NodeStatus evalNode(){
+    NodeStatus result;
+    result = child.evalNode();
+
+    switch(result){
+      case SUCCESS:
+        result = NodeStatus.RUNNING;
+        repeat_times--;
+        break;
+      case FAILURE:
+        result = NodeStatus.FAILURE;
+        break;
+      case RUNNING:
+        result = NodeStatus.RUNNING;
+        break;
+    }
+
+    if(repeat_times == 0){
+      result = NodeStatus.SUCCESS;
+    }
+
+    return result;
+
+  }
+
+}
+
+
+class RetryUntilSuccessfulNode extends DecoratorNode{
+  
+  RetryUntilSuccessfulNode(String node_name){
+    super(node_name);
+  }
+}
+
+
+class KeepRunningUntilFailureNode extends DecoratorNode{
+
+  KeepRunningUntilFailureNode(String node_name){
+    super(node_name);
+  }
 }
 
 class LeafNode extends BehaviorTreeNode{ 
@@ -255,6 +315,4 @@ class ActionNode extends LeafNode{
   }
 
 }
-
-
 
