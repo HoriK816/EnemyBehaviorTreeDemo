@@ -232,10 +232,40 @@ class RepeaterNode extends DecoratorNode{
 
 
 class RetryUntilSuccessfulNode extends DecoratorNode{
+
+  int number_attempt;
   
-  RetryUntilSuccessfulNode(String node_name){
+  RetryUntilSuccessfulNode(String node_name, int number_attempt){
     super(node_name);
+    this.number_attempt =  number_attempt; 
   }
+
+  @Override 
+  NodeStatus evalNode(){
+
+    NodeStatus result;
+    result = child.evalNode();
+
+    switch(result){
+      case SUCCESS:
+        result = NodeStatus.SUCCESS;
+        break;
+      case FAILURE:
+        result = NodeStatus.RUNNING;
+        number_attempt--;
+        break;
+      case RUNNING:
+        result = NodeStatus.RUNNING;
+        break;
+    }
+
+    if(number_attempt == 0){
+      result = NodeStatus.FAILURE;
+    }
+
+    return result;
+  }
+
 }
 
 
@@ -244,6 +274,28 @@ class KeepRunningUntilFailureNode extends DecoratorNode{
   KeepRunningUntilFailureNode(String node_name){
     super(node_name);
   }
+
+  @Override
+  NodeStatus evalNode(){
+    
+    NodeStatus result;
+    result = child.evalNode();
+
+    switch(result){
+      case SUCCESS:
+        result = NodeStatus.RUNNING;
+        break;
+      case FAILURE:
+        result = NodeStatus.FAILURE;
+        break;
+      case RUNNING:
+        result = NodeStatus.RUNNING;
+        break;
+    }
+
+    return result;
+  }
+
 }
 
 class LeafNode extends BehaviorTreeNode{ 

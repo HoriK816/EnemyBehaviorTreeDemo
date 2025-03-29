@@ -29,7 +29,8 @@ void setup(){
   // testCalcPath();
 
   // testInverter();
-  setupRepeater();
+  // setupRepeater();
+  setupRetryUntilSuccessfulNode();
 }
 
 // this is a test method for the Behavior Tree
@@ -69,7 +70,6 @@ void testBehaviorTree(){
 }
 
 // this is a test method for the Sequence Tree
-
 void testSequenceTree(){
   if(is_finished){
     return;
@@ -149,6 +149,37 @@ void testRepeater(){
 
 }
 
+void setupRetryUntilSuccessfulNode(){
+  root.printName();
+
+  DummyRandomFailureAction action_1 = new DummyRandomFailureAction("dummy 1", 1);
+
+  RetryUntilSuccessfulNode retry = new RetryUntilSuccessfulNode("retry until success", 5);
+
+  root.addChild(retry);
+  retry.setChild(action_1);
+
+  is_finished = false;
+}
+
+void testRetryUntilSucessfulNode(){
+  
+  if(is_finished){
+    return;
+  }
+  
+  NodeStatus result = root.evalNode();
+
+  if(result == NodeStatus.SUCCESS){
+    println("SUCCESS!");
+    is_finished = true;
+  }else if(result == NodeStatus.FAILURE){
+    println("FAILURE!");
+    is_finished = true;
+  }
+}
+
+
 // this is a test method 
 void testCalcPath(){
    EnemyWalk enemy_walk = new EnemyWalk("enemy walk", 30, enemy); 
@@ -179,7 +210,8 @@ void draw(){
   
   // test the Selector Tree
   // testSelectorTree();
-  testRepeater();
+  // testRepeater();
+  testRetryUntilSucessfulNode();
 }
 
 
