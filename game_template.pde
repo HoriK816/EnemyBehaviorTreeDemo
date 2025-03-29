@@ -28,7 +28,8 @@ void setup(){
   // testBehaviorTree();
   // testCalcPath();
 
-  testInverter();
+  // testInverter();
+  setupRepeater();
 }
 
 // this is a test method for the Behavior Tree
@@ -37,6 +38,7 @@ void testBehaviorTree(){
 
   // tree test (debug)
   /*
+   
   BehaviorTreeNode left_child = new BehaviorTreeNode("left");
   BehaviorTreeNode right_child = new BehaviorTreeNode("right");
   root.addChild(left_child);
@@ -96,8 +98,6 @@ void testSelectorTree(){
 
 }
 
-// TODO : Debug an inverter node !!!!
-// this is a test method for an Inverter node
 void testInverter(){
 
   root.printName();
@@ -120,13 +120,41 @@ void testInverter(){
   return;
 }
 
+
+// for debug
+void setupRepeater(){
+  root.printName();
+
+  DummyAction action_1 = new DummyAction("dummy 1", 1);
+
+  RepeaterNode rep1 = new RepeaterNode("repeater 1", 5);  
+  
+  root.addChild(rep1);
+  rep1.setChild(action_1);
+
+  is_finished = false;
+}
+
+void testRepeater(){
+  
+  if(is_finished){
+    return;
+  }
+
+  NodeStatus result = root.evalNode();
+
+  if(result == NodeStatus.SUCCESS){
+    is_finished = true;
+  }
+
+}
+
 // this is a test method 
 void testCalcPath(){
    EnemyWalk enemy_walk = new EnemyWalk("enemy walk", 30, enemy); 
    enemy_walk.Action();
 
 }
-
 
 
 void draw(){
@@ -151,8 +179,8 @@ void draw(){
   
   // test the Selector Tree
   // testSelectorTree();
+  testRepeater();
 }
-
 
 
 class Player{
@@ -209,6 +237,7 @@ class Player{
   }
 
 }
+
 
 class Enemy{
 
