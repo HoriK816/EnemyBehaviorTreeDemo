@@ -117,7 +117,7 @@ void draw(){
 
   /*---------- calculate phase ----------*/
   player.move();
-  enemy.move();
+  // enemy.move();
   move_bullets();   
   remove_bullets();
 

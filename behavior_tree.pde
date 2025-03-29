@@ -9,11 +9,11 @@ enum Direction{
 class MovePath{
 
   ArrayList<Direction> move_direction;
-  ArrayList<int> move_speed;
+  ArrayList<Integer> move_speed;
 
   MovePath(){
     move_direction = new ArrayList<Direction>();
-    move_speed = new ArrayList<int>();
+    move_speed = new ArrayList<Integer>();
   }
 
   void addPath(Direction direction, int speed){
@@ -23,6 +23,9 @@ class MovePath{
 
   // for debugging
   void printAllPath(){
+    println("printAllPath()");
+    println("list size : ", move_direction.size());
+
     for(int i = 0; i<move_direction.size(); i++){
 
       Direction direction = move_direction.get(i);
@@ -360,23 +363,22 @@ class EnemyWalk extends ActionNode{
 
   Enemy enemy;
   boolean route_calc_done = false;
+  PVector dest;
 
   MovePath path = new MovePath();
 
-
-  EnemyWalk(String action_name, int required_time, Enemy enemy){
+  EnemyWalk(String node_name, int required_time, Enemy enemy){
+    super(node_name, required_time);
     this.enemy = enemy;
-    super("walk",30);
   }
-
 
   @Override
   NodeStatus Action(){
     if(!route_calc_done){
-      PVecotr dest = decideDestination(); 
+      PVector dest = decideDestination(); 
       
       // are these parameter appropriate??? 
-      calcPath(dest, enemy.position, enemy.speed);
+      calcPath(dest, enemy.position, enemy.max_speed);
 
       this.printPath();
     }
@@ -397,8 +399,8 @@ class EnemyWalk extends ActionNode{
 
   PVector decideDestination(){
 
-    dest_x = random(0, WINDOW_WIDTH);
-    dest_y = random(0, WIDNWO_HEIGHT);
+    float dest_x = random(0, WINDOW_WIDTH);
+    float dest_y = random(0, WINDOW_HEIGHT);
 
     dest = new PVector(dest_x, dest_y);
     return dest;
@@ -407,6 +409,7 @@ class EnemyWalk extends ActionNode{
 
 
   void printPath(){
+    println("printPath()");
     this.path.printAllPath();
   }
 
@@ -416,62 +419,66 @@ class EnemyWalk extends ActionNode{
     boolean move_x_done = false;
     boolean move_y_done = false;
      
-    diff_x = dest.x - current_position.x;
-    diff_y = dest.y - current_position.y;
+    int diff_x = (int)dest.x - (int)current_position.x;
+    int diff_y = (int)dest.y - (int)current_position.y;
   
     // x direction
-    while(move_x_done){
+    while(!move_x_done){
 
-        if(dif_x == 0){ // no need to move
+        if(diff_x == 0){ // no need to move
           move_x_done = true;
 
         }else if(0 < diff_x){ // move to right
 
           if(abs(diff_x) < max_speed){ // move in one frame
-            path.addPath(Direction.RIGHT, abs(diff_x));
+            path.addPath(Direction.RIGHT, (int)abs(diff_x));
             move_x_done = true;
 
           }else{
             path.addPath(Direction.RIGHT, max_speed);
+            diff_x -= max_speed;
           }
 
         }else{ // move to left
 
           if(abs(diff_x) < max_speed){ // move in one frame
-            path.addPath(Direction.LEFT, abs(diff_x));
+            path.addPath(Direction.LEFT, (int)abs(diff_x));
             move_x_done = true;
 
           }else{
-            path.addPath(Direction.Left, max_speed);
+            path.addPath(Direction.LEFT, max_speed);
+            diff_x += max_speed;
           }
 
         }
     }
 
     // y direction
-    while(move_y_done){
+    while(!move_y_done){
 
-        if(dif_y == 0){
+        if(diff_y == 0){
           move_y_done = true;
 
         }else if(0 < diff_y){ // move to down
 
-          if(abs(diff_y) < max_speed){ // move in one frame
-            path.addPath(Direction.DOWN, abs(diff_y));
+          if((int)abs(diff_y) < max_speed){ // move in one frame
+            path.addPath(Direction.DOWN, (int)abs(diff_y));
             move_y_done = true;
 
           }else{
             path.addPath(Direction.DOWN, max_speed);
+            diff_y -= max_speed;
           }
 
         }else{ // move to up
       
-          if(abs(diff_y)< max_speed){ // move in one frame
-            path.addPath(Direction.UP, abs(diff_y));
+          if((int)abs(diff_y)< max_speed){ // move in one frame
+            path.addPath(Direction.UP, (int)abs(diff_y));
             move_y_done = true;
 
           }else{
             path.addPath(Direction.UP,  max_speed);
+            diff_y += max_speed;
           }
 
         }
