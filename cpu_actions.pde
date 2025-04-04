@@ -293,3 +293,14 @@ class EnemyWalk extends ActionNode{
 }
 
 
+class EnemyAttack extends ActionNode{
+  
+  EnemyAttack(String node_name, int required_time){
+    super(node_name, required_time);
+  };
+
+  @Override
+  Action(){
+
+  }
+}
