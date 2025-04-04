@@ -15,70 +15,29 @@ ArrayList<Bullet> player_bullets = new ArrayList<Bullet>();
 
 // test node for BT
 // SequenceNode root = new SequenceNode("root"); 
-SelectorNode root = new SelectorNode("root");
+ControlNode root = new SequenceNode("root");
 
 boolean is_finished = false;
 
 void setup(){
   // cannot use variables to specify the window size on size() 
   size(1200,900);
-
   frameRate(FRAME_RATE);
 
-  // testBehaviorTree();
-  // testCalcPath();
-
-  // testInverter();
-  // setupRepeater();
-  // setupRetryUntilSuccessfulNode();
-  setupKeepRunningUntilFailureNode();
+  initiateBehaviorTree();
 }
 
-// this is a test method for the Behavior Tree
-void testBehaviorTree(){
-  root.printName();
+void initiateBehaviorTree(){
+  SequenceNode mover = new SequenceNode("Mover");
+  root.addChild(mover);
 
-  // tree test (debug)
-  /*
-   
-  BehaviorTreeNode left_child = new BehaviorTreeNode("left");
-  BehaviorTreeNode right_child = new BehaviorTreeNode("right");
-  root.addChild(left_child);
-  root.addChild(right_child);
-
-  root.printAllChildren();
-
-  */
-
-  // leaf node test (debug)
-  DummyAction action_1 = new DummyAction("dummy 1", 10);
-  DummyAction action_2 = new DummyAction("dummy 2", 10);
-  root.addChild(action_1);
-  root.addChild(action_2);
-
-  // action node test (debug)
-  Walk walk = new Walk();
-  Attack attack = new Attack();
-  root.addChild(walk);
-  root.addChild(attack);
-
-  // condition node test (debug)
-  DummyCondition dummy_condition = new DummyCondition("sum checker");
-  root.addChild(dummy_condition);
-
-  root.printAllChildren();
-
+  EnemyWalk enemy_walk1 = new EnemyWalk("let enemy walk", 10, enemy);
+  EnemyWalk enemy_walk2 = new EnemyWalk("let enemy walk", 20, enemy);
+  EnemyWalk enemy_walk3 = new EnemyWalk("let enemy walk", 30, enemy);
+  mover.addChild(enemy_walk1);
+  mover.addChild(enemy_walk2);
+  mover.addChild(enemy_walk3);
 }
-
-
-
-// this is a test method 
-void testCalcPath(){
-   EnemyWalk enemy_walk = new EnemyWalk("enemy walk", 30, enemy); 
-   enemy_walk.Action();
-
-}
-
 
 void draw(){
   background(0,0,0);
@@ -90,21 +49,22 @@ void draw(){
   remove_bullets();
 
   /*---------- enemy turn ----------*/
-  enemy.normal_shot(enemy_bullets);
+  
+  // the execution of behavior tree should be done on enemy class
+  // TODO: fix it 
+  if(!(root.evalNode() == NodeStatus.RUNNING)){
+    root = new SequenceNode("root");
+    initiateBehaviorTree(); 
+  };
+  
+  // enemy.normal_shot(enemy_bullets);
+
 
   /*---------- draw phase ----------*/
   player.draw();
   enemy.draw();
   draw_bullets();
 
-  // test the Sequence Tree
-  // testSequenceTree();
-  
-  // test the Selector Tree
-  // testSelectorTree();
-  // testRepeater();
-  // testRetryUntilSucessfulNode();
-  testKeepRunnningUntilFailureNode();
 }
 
 

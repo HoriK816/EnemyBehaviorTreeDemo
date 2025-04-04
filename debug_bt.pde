@@ -1,3 +1,40 @@
+// this is a test method for the Behavior Tree
+void testBehaviorTree(){
+  root.printName();
+
+  // tree test (debug)
+  /*
+   
+  BehaviorTreeNode left_child = new BehaviorTreeNode("left");
+  BehaviorTreeNode right_child = new BehaviorTreeNode("right");
+  root.addChild(left_child);
+  root.addChild(right_child);
+
+  root.printAllChildren();
+
+  */
+
+  // leaf node test (debug)
+  DummyAction action_1 = new DummyAction("dummy 1", 10);
+  DummyAction action_2 = new DummyAction("dummy 2", 10);
+  root.addChild(action_1);
+  root.addChild(action_2);
+
+  // action node test (debug)
+  Walk walk = new Walk();
+  Attack attack = new Attack();
+  root.addChild(walk);
+  root.addChild(attack);
+
+  // condition node test (debug)
+  DummyCondition dummy_condition = new DummyCondition("sum checker");
+  root.addChild(dummy_condition);
+
+  root.printAllChildren();
+
+}
+
+
 // this is a test method for the Sequence Tree
 void testSequenceTree(){
   if(is_finished){

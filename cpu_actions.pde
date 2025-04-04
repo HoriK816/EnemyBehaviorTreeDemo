@@ -6,15 +6,18 @@ class MovePath{
 
   ArrayList<Direction> move_direction;
   ArrayList<Integer> move_speed;
+  int size;
 
   MovePath(){
     move_direction = new ArrayList<Direction>();
     move_speed = new ArrayList<Integer>();
+    size = 0;
   }
 
   void addPath(Direction direction, int speed){
     this.move_direction.add(direction); 
     this.move_speed.add(speed); 
+    size++;
   }
 
   // for debugging
@@ -156,6 +159,9 @@ class EnemyWalk extends ActionNode{
   PVector dest;
 
   MovePath path = new MovePath();
+  
+  int move_counter = 0;
+
 
   EnemyWalk(String node_name, int required_time, Enemy enemy){
     super(node_name, required_time);
@@ -173,17 +179,22 @@ class EnemyWalk extends ActionNode{
       this.printPath();
     }
 
-    
-    // for debugging
-    NodeStatus status = NodeStatus.SUCCESS;
+    // move character
+    if(move_counter == path.size){
+      required_time = 0;
+    }else{
+      Direction move_dir = path.move_direction.get(move_counter);
+      int move_speed = path.move_speed.get(move_counter);
+      enemy.move(move_dir, move_speed);
+    }
+
+    move_counter++;
 
     // it's correct behavior that calls super.
-    /* 
     NodeStatus status = super.Action(); 
-    */
-
 
     return status;
+
   }
 
 
