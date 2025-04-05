@@ -21,7 +21,7 @@ boolean is_finished = false;
 
 void setup(){
   // cannot use variables to specify the window size on size() 
-  size(1200,900);
+  size(900,1200);
   frameRate(FRAME_RATE);
 
   initiateBehaviorTree();
@@ -31,12 +31,24 @@ void initiateBehaviorTree(){
   SequenceNode mover = new SequenceNode("Mover");
   root.addChild(mover);
 
-  EnemyWalk enemy_walk1 = new EnemyWalk("let enemy walk", 10, enemy);
-  EnemyWalk enemy_walk2 = new EnemyWalk("let enemy walk", 20, enemy);
-  EnemyWalk enemy_walk3 = new EnemyWalk("let enemy walk", 30, enemy);
+  EnemyWalk enemy_walk1 = new EnemyWalk("let enemy walk", 100, enemy);
+  EnemyWalk enemy_walk2 = new EnemyWalk("let enemy walk", 15, enemy);
+  EnemyWalk enemy_walk3 = new EnemyWalk("let enemy walk", 15, enemy);
+	EnemyAttack enemy_attack1 = new EnemyAttack("attack player", 15,
+																						 enemy, player);
+	EnemyAttack enemy_attack2 = new EnemyAttack("attack player", 15,
+																						 enemy, player);
+	EnemyAttack enemy_attack3 = new EnemyAttack("attack player", 10,
+																						 enemy, player);
+	EnemyAttack enemy_attack4 = new EnemyAttack("attack player", 10,
+																						 enemy, player);
   mover.addChild(enemy_walk1);
+	mover.addChild(enemy_attack1);
+	mover.addChild(enemy_attack2);
   mover.addChild(enemy_walk2);
+	mover.addChild(enemy_attack3);
   mover.addChild(enemy_walk3);
+	mover.addChild(enemy_attack4);
 }
 
 void draw(){
@@ -123,53 +135,6 @@ class Player{
 
 }
 
-
-class Enemy{
-
-  int width = 20;
-  int height = 25;
-  color enemy_color = color(255, 255, 0); // purple 
-
-  PVector position; // two dimensions. (x, y).
-  int max_speed = 10;
-
-  Enemy(float x, float y){
-    position = new PVector(x, y);
-  }
-
-  void move(Direction direction, int speed){
-    switch(direction){
-      case UP:
-        position.y -= speed;
-        break;
-      case LEFT:
-        position.x -= speed;
-        break;
-      case RIGHT:
-        position.x += speed;
-        break;
-      case DOWN:
-        position.y += speed;
-        break;
-    }
-
-  }
-
-  void draw(){
-    fill(enemy_color);
-    rect(position.x, position.y, width, height);
-  }
-
-  void normal_shot(ArrayList<Bullet> bullets){
-    int bullet_speed = 10;
-    float direction = 0;
-    Bullet bullet = new Bullet(position.x + (width/2), position.y + height,
-                               bullet_speed, direction);
-    bullets.add(bullet);
-  }
-
-
-}
 
 class Bullet{
   

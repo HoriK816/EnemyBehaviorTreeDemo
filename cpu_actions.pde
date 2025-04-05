@@ -294,13 +294,25 @@ class EnemyWalk extends ActionNode{
 
 
 class EnemyAttack extends ActionNode{
-  
-  EnemyAttack(String node_name, int required_time){
+ 
+	Enemy enemy;
+	Player player;
+	ArrayList<Bullet> bullet;
+ 
+  EnemyAttack(String node_name, int required_time, Enemy enemy, Player player){
     super(node_name, required_time);
+		this.player = player;
+		this.enemy = enemy;
+		this.bullet = enemy_bullets;
   };
 
   @Override
-  Action(){
-
+  NodeStatus Action(){
+		enemy.aim_shot(bullet, player);
+    NodeStatus status = super.Action(); 
+		return status;
   }
+
+
+
 }
