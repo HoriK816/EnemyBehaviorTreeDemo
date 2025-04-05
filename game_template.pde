@@ -24,32 +24,8 @@ void setup(){
   size(900,1200);
   frameRate(FRAME_RATE);
 
-  initiateBehaviorTree();
 }
 
-void initiateBehaviorTree(){
-  SequenceNode mover = new SequenceNode("Mover");
-  root.addChild(mover);
-
-  EnemyWalk enemy_walk1 = new EnemyWalk("let enemy walk", 100, enemy);
-  EnemyWalk enemy_walk2 = new EnemyWalk("let enemy walk", 15, enemy);
-  EnemyWalk enemy_walk3 = new EnemyWalk("let enemy walk", 15, enemy);
-	EnemyAttack enemy_attack1 = new EnemyAttack("attack player", 15,
-																						 enemy, player);
-	EnemyAttack enemy_attack2 = new EnemyAttack("attack player", 15,
-																						 enemy, player);
-	EnemyAttack enemy_attack3 = new EnemyAttack("attack player", 10,
-																						 enemy, player);
-	EnemyAttack enemy_attack4 = new EnemyAttack("attack player", 10,
-																						 enemy, player);
-  mover.addChild(enemy_walk1);
-	mover.addChild(enemy_attack1);
-	mover.addChild(enemy_attack2);
-  mover.addChild(enemy_walk2);
-	mover.addChild(enemy_attack3);
-  mover.addChild(enemy_walk3);
-	mover.addChild(enemy_attack4);
-}
 
 void draw(){
   background(0,0,0);
@@ -61,15 +37,7 @@ void draw(){
   remove_bullets();
 
   /*---------- enemy turn ----------*/
-  
-  // the execution of behavior tree should be done on enemy class
-  // TODO: fix it 
-  if(!(root.evalNode() == NodeStatus.RUNNING)){
-    root = new SequenceNode("root");
-    initiateBehaviorTree(); 
-  };
-  
-  // enemy.normal_shot(enemy_bullets);
+  enemy.takeAction();
 
 
   /*---------- draw phase ----------*/
