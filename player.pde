@@ -13,6 +13,10 @@ class Player{
 
   int moving_amount = 10;    
 
+  int hp;
+  int attack_power; 
+  int defence_power;
+
   Player(float x, float y){
     position = new PVector(x, y);
   }
@@ -51,4 +55,14 @@ class Player{
     bullets.add(bullet);
   }
 
+
+  void takeDamage(){
+    if(!checkHit)
+      return;
+
+  }
+
+  boolean checkHit(){
+
+  }
 }
