@@ -1,5 +1,5 @@
-static int WINDOW_HEIGHT = 1200;
-static int WINDOW_WIDTH = 900;
+static int WINDOW_HEIGHT = 900;
+static int WINDOW_WIDTH = 1200;
 static int FRAME_RATE = 60;
 
 // x = 250, y = 400
@@ -19,7 +19,7 @@ boolean is_finished = false;
 
 void setup(){
   // cannot use variables to specify the window size on size() 
-  size(900,1200);
+  size(1200,900);
   frameRate(FRAME_RATE);
 
 }
