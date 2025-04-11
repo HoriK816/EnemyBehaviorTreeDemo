@@ -110,7 +110,6 @@ class Enemy{
   }
 
 
-
   void normal_shot(ArrayList<Bullet> bullets){
     int bullet_speed = 10;
     float direction = 0;
@@ -125,11 +124,11 @@ class Enemy{
 		int target_height = player.height;
 
 		float theta = atan2(target.y + target_width/2 - position.y - height,
-												target.x + target_height/2 - position.x - width/2);
+							target.x + target_height/2 - position.x - width/2);
 
 		Bullet bullet = new Bullet(position.x + (width/2),
-															 position.y + (height),
-															 5, theta-HALF_PI);
+								   position.y + (height),
+								   5, theta-HALF_PI);
 		bullets.add(bullet);
 	}
 
