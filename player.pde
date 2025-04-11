@@ -14,12 +14,14 @@ class Player{
   int moving_amount = 10;    
 
   int hp;
+  int max_hp;
   int attack_power; 
   int defence_power;
 
   Player(float x, float y){
     position = new PVector(x, y);
     hp = 100;
+    max_hp = 100;
     attack_power = 5; // now, it's a dummy value.
     defence_power = 5; // now, it's a dummy value.
   }
