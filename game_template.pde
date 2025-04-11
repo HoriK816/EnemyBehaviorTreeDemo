@@ -28,10 +28,14 @@ void draw(){
   background(0,0,0);
 
   /*---------- calculate phase ----------*/
-  player.move();
-  // enemy.move();
   move_bullets();   
-  remove_bullets();
+  remove_hit_bullets();
+  remove_frameout_bullets();
+  player.checkHit(enemy_bullets);
+  enemy.checkHit(player_bullets);
+
+  /*---------- player turn ----------*/
+  player.move();
 
   /*---------- enemy turn ----------*/
   enemy.takeAction();

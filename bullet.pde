@@ -5,6 +5,7 @@ class Bullet{
   
   int width = 5;
   int height = 5;
+  boolean is_hit = false;
   color bullet_color = color(255, 255, 255); // white
                                                  
   PVector position;
@@ -61,7 +62,7 @@ void draw_bullets(){
   }
 }
 
-void remove_bullets(){
+void remove_frameout_bullets(){
   for(int i = player_bullets.size()-1; i>=0; i--){
     if(player_bullets.get(i).is_out())
       player_bullets.remove(i);
@@ -72,3 +73,17 @@ void remove_bullets(){
       enemy_bullets.remove(i);
   }
 }
+
+void remove_hit_bullets(){
+
+  for(int i = player_bullets.size()-1; i>=0; i--){
+    if(player_bullets.get(i).is_hit)
+      player_bullets.remove(i);
+  }
+
+  for(int i = enemy_bullets.size()-1; i>=0; i--){
+    if(enemy_bullets.get(i).is_hit)
+      enemy_bullets.remove(i);
+  }
+}
+

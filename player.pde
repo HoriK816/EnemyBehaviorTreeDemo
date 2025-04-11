@@ -19,6 +19,9 @@ class Player{
 
   Player(float x, float y){
     position = new PVector(x, y);
+    hp = 100;
+    attack_power = 5; // now, it's a dummy value.
+    defence_power = 5; // now, it's a dummy value.
   }
 
   void move(){
@@ -57,12 +60,37 @@ class Player{
 
 
   void takeDamage(){
-    if(!checkHit)
-      return;
+    this.hp -= 5;
+    println("hp : ", this.hp);
 
   }
 
-  boolean checkHit(){
+  void checkHit(ArrayList<Bullet> bullets){
+    
+    for(int i=0; i<bullets.size(); i++){
 
+      boolean is_hit_x = false;
+      boolean is_hit_y = false;
+
+      Bullet bullet = bullets.get(i);
+      PVector bullet_position =  bullet.position;
+
+      if((position.x < bullet_position.x) &&
+         (bullet_position.x < position.x + width)){
+          is_hit_x = true;
+      }
+      if((position.y < bullet_position.y) && 
+         (bullet_position.y < position.y + height)){
+          is_hit_y = true; 
+      }
+
+      if(is_hit_x && is_hit_y){
+          bullet.is_hit = true;
+          takeDamage();
+      }
+    }
   }
+
+
+
 }
