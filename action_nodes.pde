@@ -146,3 +146,25 @@ class RandomGenerator extends ActionNode{
     return status;
   }
 }
+
+
+class ReleaseRandomStackTop{
+  
+  RandomNumberStack stack;
+
+  ReleaseRandomStackTop(RandomNumberStack stack){
+    this.stack = stack;
+  }
+
+  void release(){
+    stack.removeStackTop();
+  }
+
+  @Override
+  NOdeStatus Action(){
+    this.release(); 
+    NodeStatus status = super.Action();
+    return status;
+  }
+}
+
