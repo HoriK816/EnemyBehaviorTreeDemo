@@ -12,16 +12,10 @@ class BehaviorTreeNode{
     name = node_name;
   }
 
-  // for debug 
-  void printName(){
-    println("the name of this node is ", name); 
-  }
-
-  // deribative classes should override this method
+  // must override this method
   NodeStatus evalNode(){
     return null;
   }
-
 }
 
 
@@ -44,7 +38,6 @@ class ControlNode extends BehaviorTreeNode{
       children.get(i).printName();
     }
   }
-
 }
 
 
@@ -94,7 +87,6 @@ class SequenceNode extends ControlNode{
     result = this.executeAllChildren();
     return result;
   }
-
 }
 
 
@@ -363,8 +355,5 @@ class ActionNode extends LeafNode{
     NodeStatus result;
     result = this.Action();
     return result;
-
   }
-
 }
-

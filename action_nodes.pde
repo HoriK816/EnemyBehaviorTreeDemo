@@ -1,7 +1,3 @@
-enum Direction{UP, LEFT, RIGHT, DOWN;}
-
-
-
 /* The class is the base class of attack actions.*/
 class Attack extends ActionNode{
 
@@ -17,42 +13,6 @@ class Attack extends ActionNode{
     return status;
   }
 }
-
-
-/* The class calculate the path to the destination. */
-class MovePath{
-
-  ArrayList<Direction> move_direction;
-  ArrayList<Integer> move_speed;
-  int move_count;
-
-  MovePath(){
-    move_direction = new ArrayList<Direction>();
-    move_speed     = new ArrayList<Integer>();
-    move_count = 0;
-  }
-
-  void addPath(Direction direction, int speed){
-    this.move_direction.add(direction); 
-    this.move_speed.add(speed); 
-    move_count++;
-  }
-
-  // for debugging
-  void printAllPath(){
-    println("printAllPath()");
-    println("list size : ", move_direction.size());
-
-    for(int i = 0; i<move_direction.size(); i++){
-
-      Direction direction = move_direction.get(i);
-      int speed = move_speed.get(i);
-
-      println("(", direction, ", ", speed,")");
-    }
-  }
-}
-
 
 class Walk extends ActionNode{
   
@@ -80,9 +40,7 @@ class EnemyWalk extends ActionNode{
   PVector dest;
 
   MovePath path = new MovePath();
-  
-  int move_counter = 0;
-
+  int move_count = 0;
 
   EnemyWalk(String node_name, int required_time, Enemy enemy){
     super(node_name, required_time);
@@ -93,126 +51,42 @@ class EnemyWalk extends ActionNode{
   NodeStatus Action(){
     if(!route_calc_done){
       PVector dest = decideDestination(); 
-      
-      // are these parameter appropriate??? 
       calcPath(dest, enemy.position, enemy.max_speed);
-
-      this.printPath();
     }
 
     // move character
-    if(move_counter == path.move_count){
+    if(this.move_count == path.number_of_movement){
       required_time = 0;
     }else{
-      Direction move_dir = path.move_direction.get(move_counter);
-      int move_speed = path.move_speed.get(move_counter);
+      Direction move_dir = path.move_direction.get(this.move_count);
+      int move_speed = path.move_speed.get(this.move_count);
       enemy.move(move_dir, move_speed);
     }
+    this.move_count++;
 
-    move_counter++;
-
-    // it's correct behavior that calls super.
     NodeStatus status = super.Action(); 
-
     return status;
-
   }
-
 
   PVector decideDestination(){
-
     float dest_x = random(0, WINDOW_WIDTH);
     float dest_y = random(0, WINDOW_HEIGHT);
-
     dest = new PVector(dest_x, dest_y);
     return dest;
-
   }
 
+  void calcPath(PVector dest, PVector current_position, int max_speed){
+    RouteCalculator route_calculator = new RouteCalculator(path);
+    path = route_calculator.calcPath(dest, current_position, max_speed);
+    route_calc_done = true;
+    this.printPath();
+  }
 
   void printPath(){
     println("printPath()");
     this.path.printAllPath();
   }
-
-
-  void calcPath(PVector dest, PVector current_position, int max_speed){
-
-    boolean move_x_done = false;
-    boolean move_y_done = false;
-     
-    int diff_x = (int)dest.x - (int)current_position.x;
-    int diff_y = (int)dest.y - (int)current_position.y;
-  
-    // x direction
-    while(!move_x_done){
-
-        if(diff_x == 0){ // no need to move
-          move_x_done = true;
-
-        }else if(0 < diff_x){ // move to right
-
-          if(abs(diff_x) < max_speed){ // move in one frame
-            path.addPath(Direction.RIGHT, (int)abs(diff_x));
-            move_x_done = true;
-
-          }else{
-            path.addPath(Direction.RIGHT, max_speed);
-            diff_x -= max_speed;
-          }
-
-        }else{ // move to left
-
-          if(abs(diff_x) < max_speed){ // move in one frame
-            path.addPath(Direction.LEFT, (int)abs(diff_x));
-            move_x_done = true;
-
-          }else{
-            path.addPath(Direction.LEFT, max_speed);
-            diff_x += max_speed;
-          }
-
-        }
-    }
-
-    // y direction
-    while(!move_y_done){
-
-        if(diff_y == 0){
-          move_y_done = true;
-
-        }else if(0 < diff_y){ // move to down
-
-          if((int)abs(diff_y) < max_speed){ // move in one frame
-            path.addPath(Direction.DOWN, (int)abs(diff_y));
-            move_y_done = true;
-
-          }else{
-            path.addPath(Direction.DOWN, max_speed);
-            diff_y -= max_speed;
-          }
-
-        }else{ // move to up
-      
-          if((int)abs(diff_y)< max_speed){ // move in one frame
-            path.addPath(Direction.UP, (int)abs(diff_y));
-            move_y_done = true;
-
-          }else{
-            path.addPath(Direction.UP,  max_speed);
-            diff_y += max_speed;
-          }
-
-        }
-
-    }
-  
-    route_calc_done = true;
-  }
-
-
 }
-
 
 
 class EnemyAttack extends ActionNode{
@@ -229,10 +103,46 @@ class EnemyAttack extends ActionNode{
 
   @Override
   NodeStatus Action(){
-		enemy.aim_shot(bullet, player);
+	  enemy.aim_shot(bullet, player);
     NodeStatus status = super.Action(); 
 		return status;
   }
+}
 
+class RondomNumberStack{
+  int random_number[];
+  int stack_top; 
 
+  RandomNumberStack(){
+    random_number = new int[100];
+    stack_top = 0;
+  }
+  
+  int refferStackTop(){
+    return random_number[stack_top];
+  }
+
+  void push(int random_number){
+    random_number[stack_top] = random_number;
+    stack_top++;
+  }
+
+  void removeStackTop(){
+    stack_top--;
+  }
+
+}
+
+class RandomGenerator extends ActionNode{
+
+  RandomeGenerator(){
+    super("RandomGenerator");
+  }
+
+  @Override
+  NodeStatus Action(){
+    int random_number = random(0, 100);
+    NodeStatus status = superAction();
+    return status;
+  }
 }
