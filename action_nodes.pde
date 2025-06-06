@@ -1,23 +1,41 @@
-enum Direction{
-  UP, LEFT, RIGHT, DOWN;
+enum Direction{UP, LEFT, RIGHT, DOWN;}
+
+
+
+/* The class is the base class of attack actions.*/
+class Attack extends ActionNode{
+
+  Attack(){ // set action name
+    super("Attack", 10);
+  }
+
+  @Override
+  NodeStatus Action(){
+    println("this is ", name);
+    println("I'm Attacking!!");
+    NodeStatus status = super.Action(); 
+    return status;
+  }
 }
 
+
+/* The class calculate the path to the destination. */
 class MovePath{
 
   ArrayList<Direction> move_direction;
   ArrayList<Integer> move_speed;
-  int size;
+  int move_count;
 
   MovePath(){
     move_direction = new ArrayList<Direction>();
-    move_speed = new ArrayList<Integer>();
-    size = 0;
+    move_speed     = new ArrayList<Integer>();
+    move_count = 0;
   }
 
   void addPath(Direction direction, int speed){
     this.move_direction.add(direction); 
     this.move_speed.add(speed); 
-    size++;
+    move_count++;
   }
 
   // for debugging
@@ -33,110 +51,13 @@ class MovePath{
       println("(", direction, ", ", speed,")");
     }
   }
-
-}
-
-
-class Attack extends ActionNode{
-
-  Attack(){
-    // set action name
-    super("Attack", 10);
-  }
-
-  @Override
-  NodeStatus Action(){
-    println("this is ", name);
-    println("I'm Attacking!!");
-
-    NodeStatus status = super.Action(); 
-    return status;
-  }
-
-}
-
-// test action (debug)
-class DummyAction extends ActionNode{
-
-  DummyAction(String node_name, int required_time){
-    super(node_name, required_time);
-  }
-
-  @Override
-  NodeStatus Action(){
-    println("this is ", name);
-    println("I have finished something!");
-
-    // decrement required time
-    NodeStatus status = super.Action(); 
-    return status;
-  }
-
-}
-
-class DummyRandomFailureAction extends ActionNode{
-  
-  DummyRandomFailureAction(String node_name, int required_time){
-    super(node_name, required_time);
-  }
-
-  @Override
-  NodeStatus Action(){
-    
-    NodeStatus result; 
-    int coin = (int)random(0,10);
-
-    if(coin < 8){
-      println("I did it!");
-      result = NodeStatus.SUCCESS;
-    }else{
-      println("oh!, I made a mistake!!");
-      result = NodeStatus.FAILURE;
-
-    }
-
-    return result;
-  }
-
-}
-
-
-class DummyCondition extends ConditionNode{
-  
-  DummyCondition(String node_name){
-    super(node_name);
-  }
-
-  void checkSumAnswer(){
-    int sum = 0;
-
-    for(int i = 0; i<= 10; i++){
-      sum += i;
-    }
-
-    if(sum == 55){
-      println("correct! sum is ", 55);
-
-    }
-
-    is_met = true;
-  }
-
-  @Override
-  void checkCondition(){
-    checkSumAnswer();
-    super.checkCondition();
-  }
-
 }
 
 
 class Walk extends ActionNode{
   
   Walk(){
-    // set action name
     super("Walk",30);
-
   }
 
   @Override
@@ -148,10 +69,10 @@ class Walk extends ActionNode{
     NodeStatus status = super.Action(); 
     return status;
   }
-
 }
 
 
+/* This class implements that enemy walks to the specified destination */ 
 class EnemyWalk extends ActionNode{
 
   Enemy enemy;
@@ -180,7 +101,7 @@ class EnemyWalk extends ActionNode{
     }
 
     // move character
-    if(move_counter == path.size){
+    if(move_counter == path.move_count){
       required_time = 0;
     }else{
       Direction move_dir = path.move_direction.get(move_counter);
@@ -293,8 +214,8 @@ class EnemyWalk extends ActionNode{
 }
 
 
+
 class EnemyAttack extends ActionNode{
- 
 	Enemy enemy;
 	Player player;
 	ArrayList<Bullet> bullet;
@@ -312,7 +233,6 @@ class EnemyAttack extends ActionNode{
     NodeStatus status = super.Action(); 
 		return status;
   }
-
 
 
 }
