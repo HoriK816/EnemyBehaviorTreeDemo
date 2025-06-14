@@ -63,6 +63,17 @@ class SequenceNode extends ControlNode{
 
     number_children = this.children.size();
 
+    // dump the sequence node
+    /*if(this.name != "root"){*/
+        /*[>println(this.name);<]*/
+        /*[>for(int i=0; i<number_children; i++){<]*/
+          /*[>println("----", this.children.get(i).name);<]*/
+        /*[>}<]*/
+        /*println("executed : ", number_executed);*/
+
+    /*}*/
+
+
     if(number_executed == number_children){
       sequence_status = NodeStatus.SUCCESS;
     }else{
@@ -343,6 +354,7 @@ class ActionNode extends LeafNode{
   }
  
   NodeStatus Action(){
+    // println("required_time: ",required_time);
     if(0 < required_time){
       required_time--;
       // println("required time : ", required_time);

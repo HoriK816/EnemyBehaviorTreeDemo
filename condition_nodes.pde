@@ -10,7 +10,7 @@ class IsRandomNumberOverThreshold extends ConditionNode{
   }
 
   void checkRandomNumber(){
-    // random_stack.dumpStack();
+    // random_stack.dmpStack();
     int random_number = random_stack.refferStackTop();
     println("reffer -> ", random_number);
     if(threshold < random_number){

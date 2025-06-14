@@ -27,8 +27,13 @@ class Enemy{
   }
 
   void takeAction(){
-    if(!(root.evalNode() == NodeStatus.RUNNING)){
-      root = new SequenceNode("root");
+    NodeStatus root_status = root.evalNode();
+
+    if(root_status == NodeStatus.SUCCESS){
+      this.root = new SequenceNode("root");
+      createBehaviorTree();
+    }else if(root_status == NodeStatus.FAILURE){
+      this.root = new SequenceNode("root");
       createBehaviorTree();
     }
   }

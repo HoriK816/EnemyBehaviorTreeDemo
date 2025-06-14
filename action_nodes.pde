@@ -119,7 +119,7 @@ class RandomNumberStack{
   }
   
   int refferStackTop(){
-    return random_number_stack[this.stack_top];
+    return random_number_stack[this.stack_top-1];
   }
 
   void push(int random_number){
@@ -162,9 +162,11 @@ class RandomGenerator extends ActionNode{
 
   @Override
   NodeStatus Action(){
-    this.generateRandomNumber();
+    if(this.required_time != 0){
+        this.generateRandomNumber();
+        // super.printName();
+    }
     NodeStatus status = super.Action();
-    // super.printName();
     return status;
   }
 }
@@ -185,9 +187,11 @@ class ReleaseRandomStackTop extends ActionNode{
 
   @Override
   NodeStatus Action(){
-    this.releaseRandomNumber(); 
+    if(this.required_time != 0){
+        this.releaseRandomNumber(); 
+        // super.printName();
+    }
     NodeStatus status = super.Action();
-    // super.printName();
     return status;
   }
 }
