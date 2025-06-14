@@ -34,27 +34,52 @@ class Enemy{
   }
 
   void createBehaviorTree(){
-    SequenceNode mover = new SequenceNode("Mover");
-    root.addChild(mover);
 
-    EnemyWalk enemy_walk1 = new EnemyWalk("let enemy walk", 100, enemy);
-    EnemyWalk enemy_walk2 = new EnemyWalk("let enemy walk", 15, enemy);
-    EnemyWalk enemy_walk3 = new EnemyWalk("let enemy walk", 15, enemy);
-    EnemyAttack enemy_attack1 = new EnemyAttack("attack player", 15,
-                                               enemy, player);
-    EnemyAttack enemy_attack2 = new EnemyAttack("attack player", 15,
-                                               enemy, player);
-    EnemyAttack enemy_attack3 = new EnemyAttack("attack player", 10,
-                                               enemy, player);
-    EnemyAttack enemy_attack4 = new EnemyAttack("attack player", 10,
-                                               enemy, player);
-    mover.addChild(enemy_walk1);
-    mover.addChild(enemy_attack1);
-    mover.addChild(enemy_attack2);
-    mover.addChild(enemy_walk2);
-    mover.addChild(enemy_attack3);
-    mover.addChild(enemy_walk3);
-    mover.addChild(enemy_attack4);
+    RandomNumberStack r_stack = new RandomNumberStack();
+    
+    /*SequenceNode mover = new SequenceNode("Mover");*/
+    /*root.addChild(mover);*/
+
+    /*EnemyWalk enemy_walk1 = new EnemyWalk("let enemy walk", 100, enemy);*/
+    /*EnemyWalk enemy_walk2 = new EnemyWalk("let enemy walk", 15, enemy);*/
+    /*EnemyWalk enemy_walk3 = new EnemyWalk("let enemy walk", 15, enemy);*/
+    /*EnemyAttack enemy_attack1 = new EnemyAttack("attack player", 15,*/
+                                               /*enemy, player);*/
+    /*EnemyAttack enemy_attack2 = new EnemyAttack("attack player", 15,*/
+                                               /*enemy, player);*/
+    /*EnemyAttack enemy_attack3 = new EnemyAttack("attack player", 10,*/
+                                               /*enemy, player);*/
+    /*EnemyAttack enemy_attack4 = new EnemyAttack("attack player", 10,*/
+                                               /*enemy, player);*/
+    /*mover.addChild(enemy_walk1);*/
+    /*mover.addChild(enemy_attack1);*/
+    /*mover.addChild(enemy_attack2);*/
+    /*mover.addChild(enemy_walk2);*/
+    /*mover.addChild(enemy_attack3);*/
+    /*mover.addChild(enemy_walk3);*/
+    /*mover.addChild(enemy_attack4);*/
+
+    SequenceNode handle_random_number = new SequenceNode("random test");
+    root.addChild(handle_random_number);
+
+    RandomGenerator       gen_a = new RandomGenerator(r_stack);
+    IsRandomNumberOverThreshold is_over
+      = new IsRandomNumberOverThreshold(50, r_stack);
+    RandomGenerator       gen_b = new RandomGenerator(r_stack);
+    ReleaseRandomStackTop rem_b = new ReleaseRandomStackTop(r_stack);
+    RandomGenerator       gen_c = new RandomGenerator(r_stack);
+    ReleaseRandomStackTop rem_c = new ReleaseRandomStackTop(r_stack);
+    ReleaseRandomStackTop rem_a = new ReleaseRandomStackTop(r_stack);
+
+    handle_random_number.addChild(gen_a);
+    handle_random_number.addChild(is_over);
+    handle_random_number.addChild(gen_b);
+    handle_random_number.addChild(rem_b);
+    handle_random_number.addChild(gen_c);
+    handle_random_number.addChild(rem_c);
+    handle_random_number.addChild(rem_a);
+
+
   }
 
   void move(Direction direction, int speed){

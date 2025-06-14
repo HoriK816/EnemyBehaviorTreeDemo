@@ -109,61 +109,85 @@ class EnemyAttack extends ActionNode{
   }
 }
 
-class RondomNumberStack{
-  int random_number[];
+class RandomNumberStack{
+  int random_number_stack[];
   int stack_top; 
 
   RandomNumberStack(){
-    random_number = new int[100];
-    stack_top = 0;
+    this.random_number_stack = new int[100];
+    this.stack_top = 0;
   }
   
   int refferStackTop(){
-    return random_number[stack_top];
+    return random_number_stack[this.stack_top];
   }
 
   void push(int random_number){
-    random_number[stack_top] = random_number;
-    stack_top++;
+    this.random_number_stack[stack_top] = random_number;
+    this.stack_top++;
+    println("---pushed -------");
+    this.dumpStack();
+    println("-----------------");
   }
 
   void removeStackTop(){
     stack_top--;
+    println("---remove stack top-------");
+    this.dumpStack();
+    println("-----------------");
   }
 
+  // for debugging
+  void dumpStack(){
+    for(int i=0; i<stack_top; i++){
+      print("| ", random_number_stack[i]," ");
+    }
+    println("");
+  }
 }
 
 class RandomGenerator extends ActionNode{
 
-  RandomeGenerator(){
-    super("RandomGenerator");
+  RandomNumberStack stack;
+
+  RandomGenerator(RandomNumberStack stack){
+    super("RandomGenerator", 1);
+    this.stack = stack;
+  }
+
+  void generateRandomNumber(){
+    int random_number = (int)random(0,100);
+    stack.push(random_number);
   }
 
   @Override
   NodeStatus Action(){
-    int random_number = random(0, 100);
-    NodeStatus status = superAction();
+    this.generateRandomNumber();
+    NodeStatus status = super.Action();
+    // super.printName();
     return status;
   }
 }
 
 
-class ReleaseRandomStackTop{
+class ReleaseRandomStackTop extends ActionNode{
   
   RandomNumberStack stack;
 
   ReleaseRandomStackTop(RandomNumberStack stack){
+    super("ReleaseRandomStackTop", 1);
     this.stack = stack;
   }
 
-  void release(){
+  void releaseRandomNumber(){
     stack.removeStackTop();
   }
 
   @Override
-  NOdeStatus Action(){
-    this.release(); 
+  NodeStatus Action(){
+    this.releaseRandomNumber(); 
     NodeStatus status = super.Action();
+    // super.printName();
     return status;
   }
 }

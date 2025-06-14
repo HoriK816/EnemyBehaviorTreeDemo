@@ -16,6 +16,12 @@ class BehaviorTreeNode{
   NodeStatus evalNode(){
     return null;
   }
+
+  // for debug 
+  void printName(){
+    println("the name of this node is ", name); 
+  }
+
 }
 
 
@@ -71,7 +77,8 @@ class SequenceNode extends ControlNode{
           sequence_status = NodeStatus.RUNNING;
           break;
         case FAILURE:
-          sequence_status = NodeStatus.FAILURE;
+          number_executed++;
+          sequence_status = NodeStatus.RUNNING;
           break;
         case RUNNING:
           sequence_status = NodeStatus.RUNNING;
@@ -297,10 +304,6 @@ class LeafNode extends BehaviorTreeNode{
   LeafNode(String node_name){
     super(node_name);
   }
-
-  NodeStatus evalNode(){
-    return null;
-  }
 }
 
 
@@ -342,7 +345,7 @@ class ActionNode extends LeafNode{
   NodeStatus Action(){
     if(0 < required_time){
       required_time--;
-      println("required time : ", required_time);
+      // println("required time : ", required_time);
       return NodeStatus.RUNNING;
     }
     else{
