@@ -16,6 +16,11 @@ PVector enemy_hp_bar_position = new PVector(600,10);
 HPBar player_hp_bar = new HPBar(player.hp, player.max_hp, player_hp_bar_position);
 HPBar enemy_hp_bar = new HPBar(enemy.hp, enemy.max_hp, enemy_hp_bar_position);
 
+// melee weapon
+// FIXME: I don't want to definition them. Originally, the player object 
+// or the enemy object generates them when they are going to attack.
+Sword player_sword = new Sword(); 
+Sword enemy_sword  = new Sword();
 
 enum GamePhase{
     OPENING, GAME, CLEAR, GAMEOVER; 
@@ -85,7 +90,9 @@ void draw(){
         remove_hit_bullets();
         remove_frameout_bullets();
         player.checkHit(enemy_bullets);
+        player.checkMeleeHit(enemy_sword);
         enemy.checkHit(player_bullets);
+        enemy.checkMeleeHit(player_sword);
 
         /*---------- UI  ----------*/
         player_hp_bar.draw(player.hp);
@@ -94,15 +101,21 @@ void draw(){
 
         /*---------- player turn ----------*/
         player.move();
+        player_sword.move(player.position, player.width, player.height); 
 
         /*---------- enemy turn ----------*/
         enemy.takeAction();
+        enemy_sword.move(enemy.position, enemy.width, enemy.height);
+        if(!enemy_sword.is_active)
+            enemy_sword.activate();
 
         /*---------- draw phase ----------*/
         player.draw();
         enemy.draw();
         draw_bullets();
-         
+        player_sword.draw(); 
+        enemy_sword.draw(); 
+
         break; 
 
       case CLEAR:
@@ -135,11 +148,14 @@ void keyPressed(){
     case RIGHT:
       player.move_right = true;
       break;
-    case ' ': 
+    case 'Z': 
       player.shot(player_bullets);
+      break;
+    case 'X':
+      if(!player_sword.is_active){
+        player_sword.activate();
+      }
   }
-
-
 }
 
 void keyReleased(){

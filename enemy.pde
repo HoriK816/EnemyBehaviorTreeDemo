@@ -40,49 +40,28 @@ class Enemy{
 
   void createBehaviorTree(){
 
-    RandomNumberStack r_stack = new RandomNumberStack();
+    /*RandomNumberStack r_stack = new RandomNumberStack();*/
     
-    /*SequenceNode mover = new SequenceNode("Mover");*/
-    /*root.addChild(mover);*/
 
-    /*EnemyWalk enemy_walk1 = new EnemyWalk("let enemy walk", 100, enemy);*/
-    /*EnemyWalk enemy_walk2 = new EnemyWalk("let enemy walk", 15, enemy);*/
-    /*EnemyWalk enemy_walk3 = new EnemyWalk("let enemy walk", 15, enemy);*/
-    /*EnemyAttack enemy_attack1 = new EnemyAttack("attack player", 15,*/
-                                               /*enemy, player);*/
-    /*EnemyAttack enemy_attack2 = new EnemyAttack("attack player", 15,*/
-                                               /*enemy, player);*/
-    /*EnemyAttack enemy_attack3 = new EnemyAttack("attack player", 10,*/
-                                               /*enemy, player);*/
-    /*EnemyAttack enemy_attack4 = new EnemyAttack("attack player", 10,*/
-                                               /*enemy, player);*/
-    /*mover.addChild(enemy_walk1);*/
-    /*mover.addChild(enemy_attack1);*/
-    /*mover.addChild(enemy_attack2);*/
-    /*mover.addChild(enemy_walk2);*/
-    /*mover.addChild(enemy_attack3);*/
-    /*mover.addChild(enemy_walk3);*/
-    /*mover.addChild(enemy_attack4);*/
+    /*SequenceNode handle_random_number = new SequenceNode("random test");*/
+    /*root.addChild(handle_random_number);*/
 
-    SequenceNode handle_random_number = new SequenceNode("random test");
-    root.addChild(handle_random_number);
+    /*RandomGenerator       gen_a = new RandomGenerator(r_stack);*/
+    /*IsRandomNumberOverThreshold is_over*/
+      /*= new IsRandomNumberOverThreshold(50, r_stack);*/
+    /*RandomGenerator       gen_b = new RandomGenerator(r_stack);*/
+    /*ReleaseRandomStackTop rem_b = new ReleaseRandomStackTop(r_stack);*/
+    /*RandomGenerator       gen_c = new RandomGenerator(r_stack);*/
+    /*ReleaseRandomStackTop rem_c = new ReleaseRandomStackTop(r_stack);*/
+    /*ReleaseRandomStackTop rem_a = new ReleaseRandomStackTop(r_stack);*/
 
-    RandomGenerator       gen_a = new RandomGenerator(r_stack);
-    IsRandomNumberOverThreshold is_over
-      = new IsRandomNumberOverThreshold(50, r_stack);
-    RandomGenerator       gen_b = new RandomGenerator(r_stack);
-    ReleaseRandomStackTop rem_b = new ReleaseRandomStackTop(r_stack);
-    RandomGenerator       gen_c = new RandomGenerator(r_stack);
-    ReleaseRandomStackTop rem_c = new ReleaseRandomStackTop(r_stack);
-    ReleaseRandomStackTop rem_a = new ReleaseRandomStackTop(r_stack);
-
-    handle_random_number.addChild(gen_a);
-    handle_random_number.addChild(is_over);
-    handle_random_number.addChild(gen_b);
-    handle_random_number.addChild(rem_b);
-    handle_random_number.addChild(gen_c);
-    handle_random_number.addChild(rem_c);
-    handle_random_number.addChild(rem_a);
+    /*handle_random_number.addChild(gen_a);*/
+    /*handle_random_number.addChild(is_over);*/
+    /*handle_random_number.addChild(gen_b);*/
+    /*handle_random_number.addChild(rem_b);*/
+    /*handle_random_number.addChild(gen_c);*/
+    /*handle_random_number.addChild(rem_c);*/
+    /*handle_random_number.addChild(rem_a);*/
 
 
   }
@@ -164,4 +143,149 @@ class Enemy{
 		bullets.add(bullet);
 	}
 
+  void checkMeleeHit(Sword sword){
+   PVector sword_start_point = sword.start_point;
+   PVector sword_end_point   = sword.end_point;
+    
+    boolean is_top_crossed    = false;
+    boolean is_bottom_crossed = false;
+    boolean is_left_crossed   = false;
+    boolean is_right_crossed  = false;
+
+   // check if two lines cross over about four lines.
+   // top line
+   PVector top_line_start = new PVector(position.x, position.y); 
+   PVector top_line_end   = new PVector(position.x + width, position.y); 
+
+   is_top_crossed = isCrossOverTwoLines(sword_start_point, sword_end_point,
+                                    top_line_start, top_line_end);
+ 
+
+   // bottom line
+   PVector bottom_line_start = new PVector(position.x, position.y + height);
+   PVector bottom_line_end   = new PVector(position.x + width, position.y + height);
+ 
+   is_bottom_crossed = isCrossOverTwoLines(sword_start_point, sword_end_point,
+                                    bottom_line_start, bottom_line_end);
+
+   // left line
+   PVector left_line_start = new PVector(position.x, position.y); 
+   PVector left_line_end   = new PVector(position.x, position.y + height); 
+
+   is_left_crossed = isCrossOverTwoLines(sword_start_point, sword_end_point,
+                                    left_line_start, left_line_end);
+
+   // right line
+   PVector right_line_start = new PVector(position.x + width, position.y); 
+   PVector right_line_end   = new PVector(position.x + width, position.y + height); 
+
+   is_right_crossed = isCrossOverTwoLines(sword_start_point, sword_end_point,
+                                    right_line_start, right_line_end);
+
+    if(is_top_crossed || is_bottom_crossed || is_left_crossed || is_right_crossed){
+        println("crossed");
+        takeDamage();
+    }
+
+  }
+
+  // you must set sword as a line 1
+  boolean isCrossOverTwoLines(PVector line1_start, PVector line1_end,
+                              PVector line2_start, PVector line2_end)
+  {
+    if((line1_start.x == line1_end.x) && (line2_start.x == line2_end.x)){
+        if(line1_start.x == line2_start.x){
+            return true;
+        }
+        return false; 
+    }
+
+    if(line2_start.x == line2_end.x){
+        float a = (line1_start.y - line1_end.y) / (line1_start.x - line1_end.x);
+        float b = line1_start.y - a * line1_start.x;
+
+        float x = line2_start.x;
+        float y = a * x + b;
+
+        if((line1_start.x <= x) && (x <= line1_end.x) && (line2_start.x <= x) && (x <= line2_end.x)
+           && (line1_start.y <= y) && ( y <= line1_end.y) && (line2_start.y <= y) && (y<= line2_end.y))
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    if(line1_start.x == line1_end.x){
+        float c = (line2_start.y - line2_end.y) / (line2_start.x - line2_end.x);
+        float d = line2_start.y - c * line2_start.x;
+
+        float x = line1_start.x;
+        float y = c * x + d;
+
+        if((line1_start.x <= x) && (x <= line1_end.x) && (line2_start.x <= x) && (x <= line2_end.x)
+           && (line1_start.y <= y) && ( y <= line1_end.y) && (line2_start.y <= y) && (y<= line2_end.y))
+        {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    float a = (line1_start.y - line1_end.y) / (line1_start.x - line1_end.x);
+    float b = line1_start.y - a * line1_start.x;
+    float c = (line2_start.y - line2_end.y) / (line2_start.x - line2_end.x);
+    float d = line2_start.y - c * line2_start.x;
+
+    /*println(" y=", a, "x+", b);*/
+    /*println(" y=", c, "x+", d);*/
+    float x=0;
+    float y=0;
+    if( a != c ){
+        x = (d - b) / (a - c);
+        y = (a * d - b * c) / (a - c);
+        /*println("solved : (", x, ", ", y, ")");*/
+    }else if(b == d){
+        return true;
+    }else{
+        return false;
+    }
+
+    /*println("x range of line1 [", line1_start.x, ",", line1_end.x,"]");*/
+    /*println("y range of line1 [", line1_start.y, ",", line1_end.y,"]");*/
+    /*println("x range of line2 [", line2_start.x, ",", line2_end.x,"]");*/
+    /*println("y range of line2 [", line2_start.y, ",", line2_end.y,"]");*/
+
+    if(line1_start.x <= line1_end.x && line1_start.y <= line1_end.y){
+    // sword, first quadrant
+        if((line1_start.x <= x) && (x <= line1_end.x) && (line2_start.x <= x) && (x <= line2_end.x)
+           && (line1_start.y <= y) && ( y <= line1_end.y) && (line2_start.y <= y) && (y<= line2_end.y))
+           {
+             return true;
+           }
+    }else if(line1_end.x < line1_start.x && line1_start.y <= line1_end.y){
+    // sword, second quadrant
+        if((line1_end.x <= x) && (x <= line1_start.x) && (line2_start.x <= x) && (x <= line2_end.x)
+           && (line1_start.y <= y) && ( y <= line1_end.y) && (line2_start.y <= y) && (y<= line2_end.y))
+           {
+             return true;
+           }
+    }else if(line1_start.x <= line1_end.x && line1_end.y <= line1_start.y){
+    // sword, third quadrant
+        if((line1_start.x <= x) && (x <= line1_end.x) && (line2_start.x <= x) && (x <= line2_end.x)
+           && (line1_end.y <= y) && ( y <= line1_start.y) && (line2_start.y <= y) && (y<= line2_end.y))
+           {
+             return true;
+           }
+    }else if(line1_end.x < line1_start.x && line1_end.y < line1_start.y){
+    // sword, forth quadrant
+        if((line1_end.x <= x) && (x <= line1_start.x) && (line2_start.x <= x) && (x <= line2_end.x)
+           && (line1_end.y <= y) && ( y <= line1_start.y) && (line2_start.y <= y) && (y<= line2_end.y))
+           {
+             return true;
+           }
+    }
+
+    return false;
+  }
 }
