@@ -33,7 +33,7 @@ class Walk extends ActionNode{
 
 
 /* This class implements that enemy walks to the specified destination */ 
-class EnemyWalk extends ActionNode{
+class RandomEnemyWalk extends ActionNode{
 
   Enemy enemy;
   boolean route_calc_done = false;
@@ -42,7 +42,7 @@ class EnemyWalk extends ActionNode{
   MovePath path = new MovePath();
   int move_count = 0;
 
-  EnemyWalk(String node_name, int required_time, Enemy enemy){
+  RandomEnemyWalk(String node_name, int required_time, Enemy enemy){
     super(node_name, required_time);
     this.enemy = enemy;
   }
@@ -89,6 +89,62 @@ class EnemyWalk extends ActionNode{
 }
 
 
+class CloseToPlayer extends ActionNode{
+
+  Enemy enemy;
+  Player player;
+  boolean route_calc_done = false;
+  PVector dest;
+
+  MovePath path = new MovePath();
+  int move_count = 0;
+
+  CloseToPlayer(String node_name, int required_time, Enemy enemy, Player player){
+    super(node_name, required_time);
+    this.enemy  = enemy;
+    this.player = player;
+  }
+
+  @Override
+  NodeStatus Action(){
+    if(!route_calc_done){
+      PVector dest = decideDestination(); 
+      calcPath(dest, enemy.position, enemy.max_speed);
+    }
+
+    // move character
+    if(this.move_count == path.number_of_movement){
+      required_time = 0;
+    }else{
+      Direction move_dir = path.move_direction.get(this.move_count);
+      int move_speed = path.move_speed.get(this.move_count);
+      enemy.move(move_dir, move_speed);
+    }
+    this.move_count++;
+
+    NodeStatus status = super.Action(); 
+    return status;
+  }
+
+  PVector decideDestination(){
+    float dest_x = player.position.x; 
+    float dest_y = player.position.y;
+    dest = new PVector(dest_x, dest_y);
+    return dest;
+  }
+
+  void calcPath(PVector dest, PVector current_position, int max_speed){
+    RouteCalculator route_calculator = new RouteCalculator(path);
+    path = route_calculator.calcPath(dest, current_position, max_speed);
+    route_calc_done = true;
+    this.printPath();
+  }
+
+  void printPath(){
+    println("printPath()");
+    this.path.printAllPath();
+  }
+}
 class EnemyAttack extends ActionNode{
 	Enemy enemy;
 	Player player;
@@ -103,11 +159,32 @@ class EnemyAttack extends ActionNode{
 
   @Override
   NodeStatus Action(){
-	  enemy.aim_shot(bullet, player);
+	enemy.aim_shot(bullet, player);
     NodeStatus status = super.Action(); 
 		return status;
   }
 }
+
+class EnemyMeleeAttack extends ActionNode{
+  Enemy enemy;
+  Sword sword;
+ 
+  EnemyMeleeAttack(String node_name, int required_time,
+              Enemy enemy, Sword sword)
+  {
+    super(node_name, required_time);
+	this.enemy = enemy;
+    this.sword = sword;
+  }
+
+  @Override
+  NodeStatus Action(){
+    enemy.melleAttack(sword);
+    NodeStatus status = super.Action(); 
+	return status;
+  }
+}
+
 
 class RandomNumberStack{
   int random_number_stack[];

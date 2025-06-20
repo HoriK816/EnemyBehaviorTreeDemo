@@ -40,30 +40,15 @@ class Enemy{
 
   void createBehaviorTree(){
 
-    /*RandomNumberStack r_stack = new RandomNumberStack();*/
-    
+    SequenceNode melee_attack = new SequenceNode("melee attack");
 
-    /*SequenceNode handle_random_number = new SequenceNode("random test");*/
-    /*root.addChild(handle_random_number);*/
+    EnemyMeleeAttack attack = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
+    CloseToPlayer close = new CloseToPlayer("close to player", 30, enemy, player);
 
-    /*RandomGenerator       gen_a = new RandomGenerator(r_stack);*/
-    /*IsRandomNumberOverThreshold is_over*/
-      /*= new IsRandomNumberOverThreshold(50, r_stack);*/
-    /*RandomGenerator       gen_b = new RandomGenerator(r_stack);*/
-    /*ReleaseRandomStackTop rem_b = new ReleaseRandomStackTop(r_stack);*/
-    /*RandomGenerator       gen_c = new RandomGenerator(r_stack);*/
-    /*ReleaseRandomStackTop rem_c = new ReleaseRandomStackTop(r_stack);*/
-    /*ReleaseRandomStackTop rem_a = new ReleaseRandomStackTop(r_stack);*/
+    melee_attack.addChild(close);
+    melee_attack.addChild(attack);
 
-    /*handle_random_number.addChild(gen_a);*/
-    /*handle_random_number.addChild(is_over);*/
-    /*handle_random_number.addChild(gen_b);*/
-    /*handle_random_number.addChild(rem_b);*/
-    /*handle_random_number.addChild(gen_c);*/
-    /*handle_random_number.addChild(rem_c);*/
-    /*handle_random_number.addChild(rem_a);*/
-
-
+    root.addChild(melee_attack);
   }
 
   void move(Direction direction, int speed){
@@ -129,19 +114,24 @@ class Enemy{
     bullets.add(bullet);
   }
 
-	void aim_shot(ArrayList<Bullet> bullets, Player player){
-		PVector target = player.position;
-		int target_width = player.width;
-		int target_height = player.height;
+  void aim_shot(ArrayList<Bullet> bullets, Player player){
+    PVector target = player.position;
+    int target_width = player.width;
+    int target_height = player.height;
 
-		float theta = atan2(target.y + target_width/2 - position.y - height,
-							target.x + target_height/2 - position.x - width/2);
+    float theta = atan2(target.y + target_width/2 - position.y - height,
+                        target.x + target_height/2 - position.x - width/2);
 
-		Bullet bullet = new Bullet(position.x + (width/2),
-								   position.y + (height),
-								   5, theta-HALF_PI);
-		bullets.add(bullet);
-	}
+    Bullet bullet = new Bullet(position.x + (width/2),
+                               position.y + (height),
+                               5, theta-HALF_PI);
+    bullets.add(bullet);
+  }
+
+  void melleAttack(Sword sword){
+    if(!sword.is_active)
+      sword.activate();
+  }
 
   void checkMeleeHit(Sword sword){
    PVector sword_start_point = sword.start_point;
@@ -184,7 +174,9 @@ class Enemy{
 
     if(is_top_crossed || is_bottom_crossed || is_left_crossed || is_right_crossed){
         println("crossed");
-        takeDamage();
+        if(sword.is_active)
+            takeDamage();
+
     }
 
   }

@@ -93,6 +93,8 @@ void draw(){
         player.checkMeleeHit(enemy_sword);
         enemy.checkHit(player_bullets);
         enemy.checkMeleeHit(player_sword);
+        player_sword.move(player.position, player.width, player.height); 
+        enemy_sword.move(enemy.position, enemy.width, enemy.height);
 
         /*---------- UI  ----------*/
         player_hp_bar.draw(player.hp);
@@ -101,13 +103,9 @@ void draw(){
 
         /*---------- player turn ----------*/
         player.move();
-        player_sword.move(player.position, player.width, player.height); 
 
         /*---------- enemy turn ----------*/
         enemy.takeAction();
-        enemy_sword.move(enemy.position, enemy.width, enemy.height);
-        if(!enemy_sword.is_active)
-            enemy_sword.activate();
 
         /*---------- draw phase ----------*/
         player.draw();
