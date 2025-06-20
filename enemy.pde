@@ -39,23 +39,52 @@ class Enemy{
   }
 
   void createBehaviorTree(){
-
-
+    RandomNumberStack r_stack = new RandomNumberStack();
+    
     SelectorNode melee_subtree = new SelectorNode("melee attack subtree");
 
-    InverterNode is_short_inverter = new InverterNode("inverter");
-    IsShortRange is_short      = new IsShortRange(300, player, enemy);
-    is_short_inverter.setChild(is_short);
-    melee_subtree.addChild(is_short_inverter);
+        InverterNode is_short_inverter = new InverterNode("inverter");
+            IsShortRange is_short      = new IsShortRange(300, player, enemy);
+        is_short_inverter.setChild(is_short);
 
-    SequenceNode melee_attack = new SequenceNode("melee attack");
-    EnemyMeleeAttack attack = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
-    CloseToPlayer close = new CloseToPlayer("close to player", 30, enemy, player);
-    melee_attack.addChild(close);
-    melee_attack.addChild(attack);
+        SequenceNode melee_attack = new SequenceNode("melee attack");
+            EnemyMeleeAttack attack = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
+            CloseToPlayer close = new CloseToPlayer("close to player", 30, enemy, player);
+        melee_attack.addChild(close);
+        melee_attack.addChild(attack);
     
+    melee_subtree.addChild(is_short_inverter);
     melee_subtree.addChild(melee_attack);
     
+    SelectorNode range_shot_subtree = new SelectorNode("range shot subtree");
+
+        range_shot_subtree.addChild(is_short);
+
+        SequenceNode move_or_shot_sequence      = new SequenceNode("shot sequence");
+
+            RandomGenerator gen_random      = new RandomGenerator(r_stack);    
+
+        move_or_shot_sequence.addChild(get_random);
+
+    SelectorNode ramdom_moving_subtree = new SelectorNode("random moving");
+
+        IsRandomNumberOverThreshold is_over_shot_threshold = new IsRandomNumberOverThreshold(50, r_stack);
+            InverterNode is_over_shot_threshold_inverter = new InverterNode("inverter");
+        is_over_shot_threshold_inverter.setChild(is_over_shot_threshold);
+
+        SequenceNode random_moving_sequence = new SequenceNode("random_moving_sequence");
+            RandomEnemyWalk random_walk = new RandomEnemyWalk("random walking", 50, enemy);
+        random_moving_sequence.addChild(random_walk);
+
+    random_moving_subtree.addChild(random_moving_sequence);
+
+
+
+        SelectorNode shot_subtree = new SelectorNode("shot subtree");
+        
+        random_moving_subtree.addChild(is_over_shot_threshold_inverter);
+
+
     root.addChild(melee_subtree);
   }
 
