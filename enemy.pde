@@ -40,17 +40,23 @@ class Enemy{
 
   void createBehaviorTree(){
 
-    SequenceNode melee_attack = new SequenceNode("melee attack");
 
-    IsShortRange is_short = new IsShortRange(300, player, enemy);
+    SelectorNode melee_subtree = new SelectorNode("melee attack subtree");
+
+    InverterNode is_short_inverter = new InverterNode("inverter");
+    IsShortRange is_short      = new IsShortRange(300, player, enemy);
+    is_short_inverter.setChild(is_short);
+    melee_subtree.addChild(is_short_inverter);
+
+    SequenceNode melee_attack = new SequenceNode("melee attack");
     EnemyMeleeAttack attack = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
     CloseToPlayer close = new CloseToPlayer("close to player", 30, enemy, player);
-
-    melee_attack.addChild(is_short);
     melee_attack.addChild(close);
     melee_attack.addChild(attack);
-
-    root.addChild(melee_attack);
+    
+    melee_subtree.addChild(melee_attack);
+    
+    root.addChild(melee_subtree);
   }
 
   void move(Direction direction, int speed){
