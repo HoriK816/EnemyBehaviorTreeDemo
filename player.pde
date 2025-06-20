@@ -139,7 +139,7 @@ class Player{
                                     right_line_start, right_line_end);
 
     if(is_top_crossed || is_bottom_crossed || is_left_crossed || is_right_crossed){
-        println("crossed");
+        // println("crossed");
         takeDamage();
     }
 

@@ -42,9 +42,11 @@ class Enemy{
 
     SequenceNode melee_attack = new SequenceNode("melee attack");
 
+    IsShortRange is_short = new IsShortRange(300, player, enemy);
     EnemyMeleeAttack attack = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
     CloseToPlayer close = new CloseToPlayer("close to player", 30, enemy, player);
 
+    melee_attack.addChild(is_short);
     melee_attack.addChild(close);
     melee_attack.addChild(attack);
 
@@ -173,7 +175,7 @@ class Enemy{
                                     right_line_start, right_line_end);
 
     if(is_top_crossed || is_bottom_crossed || is_left_crossed || is_right_crossed){
-        println("crossed");
+        // println("crossed");
         if(sword.is_active)
             takeDamage();
 

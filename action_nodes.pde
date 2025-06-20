@@ -79,7 +79,7 @@ class RandomEnemyWalk extends ActionNode{
     RouteCalculator route_calculator = new RouteCalculator(path);
     path = route_calculator.calcPath(dest, current_position, max_speed);
     route_calc_done = true;
-    this.printPath();
+    // this.printPath();
   }
 
   void printPath(){
@@ -137,7 +137,7 @@ class CloseToPlayer extends ActionNode{
     RouteCalculator route_calculator = new RouteCalculator(path);
     path = route_calculator.calcPath(dest, current_position, max_speed);
     route_calc_done = true;
-    this.printPath();
+    // this.printPath();
   }
 
   void printPath(){
