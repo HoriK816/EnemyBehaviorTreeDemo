@@ -140,7 +140,8 @@ class Player{
 
     if(is_top_crossed || is_bottom_crossed || is_left_crossed || is_right_crossed){
         // println("crossed");
-        takeDamage();
+        if(sword.is_active)
+          takeDamage();
     }
 
   }
