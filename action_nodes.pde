@@ -171,6 +171,58 @@ class EnemyAttack extends ActionNode{
   }
 }
 
+class EnemyAllRangeShot extends ActionNode{
+	Enemy enemy;
+	Player player;
+	ArrayList<Bullet> bullet;
+  boolean finish_attack;
+ 
+  EnemyAllRangeShot(String node_name, int required_time, Enemy enemy){
+    super(node_name, required_time);
+		this.player = player;
+		this.enemy = enemy;
+		this.bullet = enemy_bullets;
+    finish_attack = false;
+  };
+
+  @Override
+  NodeStatus Action(){
+    if(!finish_attack){
+	    enemy.all_range_shot(bullet, player);
+      finish_attack = true;
+    }
+    NodeStatus status = super.Action(); 
+		return status;
+  }
+}
+
+ 
+class EnemyNWayShot extends ActionNode{
+	Enemy enemy;
+	Player player;
+	ArrayList<Bullet> bullet;
+  boolean finish_attack;
+ 
+  EnemyNWayShot(String node_name, int required_time, Enemy enemy){
+    super(node_name, required_time);
+		this.player = player;
+		this.enemy = enemy;
+		this.bullet = enemy_bullets;
+    finish_attack = false;
+  };
+
+  @Override
+  NodeStatus Action(){
+    if(!finish_attack){
+	    enemy.nway_shot(bullet, player);
+      finish_attack = true;
+    }
+    NodeStatus status = super.Action(); 
+		return status;
+  }
+}
+
+
 class EnemyMeleeAttack extends ActionNode{
   Enemy enemy;
   Sword sword;

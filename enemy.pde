@@ -139,14 +139,13 @@ class Enemy{
     }
   }
 
-	void all_range_shot(){
+	void all_range_shot(ArrayList<Bullet> bullets){
 			int ways = 100;
 			for(float d=0; d<2*PI; d+=2*PI/ways){
 					Bullet bullet = new Bullet(position.x, position.y, 5, d);
 					bullets.add(bullet);
 			}
 	}
-
 
   void normal_shot(ArrayList<Bullet> bullets){
     int bullet_speed = 10;
@@ -170,7 +169,7 @@ class Enemy{
     bullets.add(bullet);
   }
 
-	void random_spread_shot(){
+	void random_spread_shot(ArrayList<Bullet> bullets){
 			int number_of_bullets = 5;
 			for(int i =0; i < number_of_bullets; i++){
 
@@ -184,7 +183,7 @@ class Enemy{
 
 	}
 
-	void nway_shot(Player player){
+	void nway_shot(ArrayList<Bullet> bullets, Player player){
 			float ways = 5;
 			float shot_degree = HALF_PI;
 			PVector target = player.position;
