@@ -43,7 +43,6 @@ class IsShortRange extends ConditionNode{
      println("It's not short range. distance :  ", distance);
    }
  }
-
 }
 
 class IsRandomNumberOverThreshold extends ConditionNode{

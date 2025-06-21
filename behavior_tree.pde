@@ -231,11 +231,10 @@ class RepeaterNode extends DecoratorNode{
     }
 
     if(repeat_times == 0){
-      result = NodeStatus.SUCCESS;
+      return NodeStatus.SUCCESS;
     }
 
     return result;
-
   }
 
 }

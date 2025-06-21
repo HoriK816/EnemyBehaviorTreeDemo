@@ -41,48 +41,74 @@ class Enemy{
   void createBehaviorTree(){
     RandomNumberStack r_stack = new RandomNumberStack();
 
-    SelectorNode     b = new SelectorNode("b");
-    InverterNode     c = new InverterNode("c");
-    IsShortRange     d = new IsShortRange(300, player, enemy);
-    SequenceNode     e = new SequenceNode("e");
-    CloseToPlayer    f = new CloseToPlayer("close to player", 30, enemy, player);
-    EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
-    c.setChild(d);
-    e.addChild(f);
-    e.addChild(g);
-    b.addChild(c);
-    b.addChild(e);
-    root.addChild(b); 
 
-    SelectorNode    h = new SelectorNode("h");
-    IsShortRange    i = new IsShortRange(300, player, enemy);
-    h.addChild(i);
+    /*SelectorNode     b = new SelectorNode("b");*/
+    /*InverterNode     c = new InverterNode("c");*/
+    /*IsShortRange     d = new IsShortRange(300, player, enemy);*/
+    /*SequenceNode     e = new SequenceNode("e");*/
+    /*CloseToPlayer    f = new CloseToPlayer("close to player", 30, enemy, player);*/
+    /*EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);*/
+    /*c.setChild(d);*/
+    /*e.addChild(f);*/
+    /*e.addChild(g);*/
+    /*b.addChild(c);*/
+    /*b.addChild(e);*/
+    /*root.addChild(b); */
 
-    SequenceNode    j = new SequenceNode("j"); 
-    RandomGenerator k = new RandomGenerator(r_stack);
-    j.addChild(k);
+    /*SelectorNode    h = new SelectorNode("h");*/
+    /*IsShortRange    i = new IsShortRange(300, player, enemy);*/
+    /*h.addChild(i);*/
 
-    SelectorNode                l = new SelectorNode("l");   
-    InverterNode                m = new InverterNode("m");    
-    IsRandomNumberOverThreshold n = new IsRandomNumberOverThreshold(50, r_stack);
-    SequenceNode                o = new SequenceNode("o");
-    RandomEnemyWalk             p = new RandomEnemyWalk("p", 300, enemy);
-    m.setChild(n);
-    o.addChild(p);
-    l.addChild(m);
-    l.addChild(o);
-    j.addChild(l);
+    /*SequenceNode    j = new SequenceNode("j"); */
+    /*RandomGenerator k = new RandomGenerator(r_stack);*/
+    /*j.addChild(k);*/
+
+    /*SelectorNode                l = new SelectorNode("l");   */
+    /*InverterNode                m = new InverterNode("m");    */
+    /*IsRandomNumberOverThreshold n = new IsRandomNumberOverThreshold(50, r_stack);*/
+    /*SequenceNode                o = new SequenceNode("o");*/
+    /*RandomEnemyWalk             p = new RandomEnemyWalk("p", 300, enemy);*/
+    /*m.setChild(n);*/
+    /*o.addChild(p);*/
+    /*l.addChild(m);*/
+    /*l.addChild(o);*/
+    /*j.addChild(l);*/
    
-    SelectorNode                 q = new SelectorNode("q");
-    IsRandomNumberOverThreshold rs = new IsRandomNumberOverThreshold(50, r_stack);
-    EnemyAttack                  t = new EnemyAttack("t", 1, enemy, player);
-    q.addChild(rs);
-    q.addChild(t);
-    j.addChild(q);
-    h.addChild(j);
-    root.addChild(h);
+    /*SelectorNode                 q = new SelectorNode("q");*/
+    /*IsRandomNumberOverThreshold rs = new IsRandomNumberOverThreshold(50, r_stack);*/
+    /*EnemyAttack                  t = new EnemyAttack("t", 1, enemy, player);*/
+    /*q.addChild(rs);*/
+    /*q.addChild(t);*/
+    /*j.addChild(q);*/
+    /*h.addChild(j);*/
+    /*root.addChild(h);*/
 
+    RandomGenerator u = new RandomGenerator(r_stack);
+    root.addChild(u);
 
+    SelectorNode                w = new SelectorNode("w");
+    InverterNode                x = new InverterNode("x");
+    IsRandomNumberOverThreshold y = new IsRandomNumberOverThreshold(90, r_stack);
+    x.setChild(y);
+    w.addChild(x);
+
+    SequenceNode       z = new SequenceNode("z");
+	  RepeaterNode      aa = new RepeaterNode("aa", 2);	
+    SequenceNode      ab = new SequenceNode("ab");
+    EnemyAllRangeShot ac = new EnemyAllRangeShot("ac", 10, enemy);
+	  RepeaterNode      ad = new RepeaterNode("aa", 3);	
+		EnemyNWayShot     ae = new EnemyNWayShot("enemy nway", 20, enemy, player);
+    ad.setChild(ae);
+    ab.addChild(ac);
+    ab.addChild(ad);
+    aa.setChild(ab);
+    z.addChild(aa);
+    w.addChild(w);
+    
+    
+
+    root.addChild(w);
+		
   }
 
   void move(Direction direction, int speed){
@@ -140,7 +166,7 @@ class Enemy{
   }
 
 	void all_range_shot(ArrayList<Bullet> bullets){
-			int ways = 100;
+			int ways = 50;
 			for(float d=0; d<2*PI; d+=2*PI/ways){
 					Bullet bullet = new Bullet(position.x, position.y, 5, d);
 					bullets.add(bullet);
@@ -175,8 +201,8 @@ class Enemy{
 
 					float random_direction = random(-(HALF_PI/2), HALF_PI/2);
 
-					Bullet bullet = new Bullet(position.x + (enemy_width/2),
-																		 position.y + (enemy_height),
+					Bullet bullet = new Bullet(position.x + width/2,
+																		 position.y + height,
 																		 5, random_direction);
 					bullets.add(bullet);
 			}
@@ -187,17 +213,17 @@ class Enemy{
 			float ways = 5;
 			float shot_degree = HALF_PI;
 			PVector target = player.position;
-			int target_width = player.player_width;
-			int target_height = player.player_height;
+			int target_width = player.width;
+			int target_height = player.height;
 
-			float pivot = atan2(target.y + target_width/2 - position.y - enemy_width/2,
-													target.x + target_height/2 - position.x - enemy_height) 
+			float pivot = atan2(target.y + target_width/2 - position.y - width/2,
+													target.x + target_height/2 - position.x - height) 
 													- HALF_PI;
  
 
 			// pivot 
-			Bullet bullet = new Bullet(position.x + (enemy_width/2),
-																 position.y + (enemy_height),
+			Bullet bullet = new Bullet(position.x + width/2,
+																 position.y + height,
 																 5, pivot);
 			bullets.add(bullet);
 
@@ -206,8 +232,8 @@ class Enemy{
 			float degree = pivot; 
 			for(float i=1; i<ways/2; i++){
 					degree -=  shot_degree/ways;
-					bullet = new Bullet(position.x + (enemy_width/2),
-															position.y + (enemy_height),
+					bullet = new Bullet(position.x + width/2,
+															position.y + height,
 															5, degree);
 					bullets.add(bullet);
 			}
@@ -216,8 +242,8 @@ class Enemy{
 			degree = pivot; 
 			for(float i=1; i<ways/2; i++){
 					degree += shot_degree/ways;
-					bullet = new Bullet(position.x + (enemy_width/2),
-															position.y + (enemy_height),
+					bullet = new Bullet(position.x + width/2,
+															position.y + height,
 															5, degree);
 					bullets.add(bullet);
 			}

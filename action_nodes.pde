@@ -188,7 +188,7 @@ class EnemyAllRangeShot extends ActionNode{
   @Override
   NodeStatus Action(){
     if(!finish_attack){
-	    enemy.all_range_shot(bullet, player);
+	    enemy.all_range_shot(bullet);
       finish_attack = true;
     }
     NodeStatus status = super.Action(); 
@@ -203,7 +203,7 @@ class EnemyNWayShot extends ActionNode{
 	ArrayList<Bullet> bullet;
   boolean finish_attack;
  
-  EnemyNWayShot(String node_name, int required_time, Enemy enemy){
+  EnemyNWayShot(String node_name, int required_time, Enemy enemy, Player player){
     super(node_name, required_time);
 		this.player = player;
 		this.enemy = enemy;
@@ -228,18 +228,18 @@ class EnemyMeleeAttack extends ActionNode{
   Sword sword;
  
   EnemyMeleeAttack(String node_name, int required_time,
-              Enemy enemy, Sword sword)
+              		 Enemy enemy, Sword sword)
   {
     super(node_name, required_time);
-	this.enemy = enemy;
-    this.sword = sword;
+	  enemy = enemy;
+    sword = sword;
   }
 
   @Override
   NodeStatus Action(){
     enemy.melleAttack(sword);
     NodeStatus status = super.Action(); 
-	return status;
+		return status;
   }
 }
 
