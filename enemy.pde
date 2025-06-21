@@ -40,52 +40,49 @@ class Enemy{
 
   void createBehaviorTree(){
     RandomNumberStack r_stack = new RandomNumberStack();
-    
-    SelectorNode melee_subtree = new SelectorNode("melee attack subtree");
 
-        InverterNode is_short_inverter = new InverterNode("inverter");
-            IsShortRange is_short      = new IsShortRange(300, player, enemy);
-        is_short_inverter.setChild(is_short);
+    SelectorNode     b = new SelectorNode("b");
+    InverterNode     c = new InverterNode("c");
+    IsShortRange     d = new IsShortRange(300, player, enemy);
+    SequenceNode     e = new SequenceNode("e");
+    CloseToPlayer    f = new CloseToPlayer("close to player", 30, enemy, player);
+    EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
+    c.setChild(d);
+    e.addChild(f);
+    e.addChild(g);
+    b.addChild(c);
+    b.addChild(e);
+    root.addChild(b); 
 
-        SequenceNode melee_attack = new SequenceNode("melee attack");
-            EnemyMeleeAttack attack = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
-            CloseToPlayer close = new CloseToPlayer("close to player", 30, enemy, player);
-        melee_attack.addChild(close);
-        melee_attack.addChild(attack);
-    
-    melee_subtree.addChild(is_short_inverter);
-    melee_subtree.addChild(melee_attack);
-    
-    SelectorNode range_shot_subtree = new SelectorNode("range shot subtree");
+    SelectorNode    h = new SelectorNode("h");
+    IsShortRange    i = new IsShortRange(300, player, enemy);
+    h.addChild(i);
 
-        range_shot_subtree.addChild(is_short);
+    SequenceNode    j = new SequenceNode("j"); 
+    RandomGenerator k = new RandomGenerator(r_stack);
+    j.addChild(k);
 
-        SequenceNode move_or_shot_sequence      = new SequenceNode("shot sequence");
-
-            RandomGenerator gen_random      = new RandomGenerator(r_stack);    
-
-        move_or_shot_sequence.addChild(get_random);
-
-    SelectorNode ramdom_moving_subtree = new SelectorNode("random moving");
-
-        IsRandomNumberOverThreshold is_over_shot_threshold = new IsRandomNumberOverThreshold(50, r_stack);
-            InverterNode is_over_shot_threshold_inverter = new InverterNode("inverter");
-        is_over_shot_threshold_inverter.setChild(is_over_shot_threshold);
-
-        SequenceNode random_moving_sequence = new SequenceNode("random_moving_sequence");
-            RandomEnemyWalk random_walk = new RandomEnemyWalk("random walking", 50, enemy);
-        random_moving_sequence.addChild(random_walk);
-
-    random_moving_subtree.addChild(random_moving_sequence);
-
-
-
-        SelectorNode shot_subtree = new SelectorNode("shot subtree");
-        
-        random_moving_subtree.addChild(is_over_shot_threshold_inverter);
+    SelectorNode                l = new SelectorNode("l");   
+    InverterNode                m = new InverterNode("m");    
+    IsRandomNumberOverThreshold n = new IsRandomNumberOverThreshold(50, r_stack);
+    SequenceNode                o = new SequenceNode("o");
+    RandomEnemyWalk             p = new RandomEnemyWalk("p", 300, enemy);
+    m.setChild(n);
+    o.addChild(p);
+    l.addChild(m);
+    l.addChild(o);
+    j.addChild(l);
+   
+    SelectorNode                 q = new SelectorNode("q");
+    IsRandomNumberOverThreshold rs = new IsRandomNumberOverThreshold(50, r_stack);
+    EnemyAttack                  t = new EnemyAttack("t", 1, enemy, player);
+    q.addChild(rs);
+    q.addChild(t);
+    j.addChild(q);
+    h.addChild(j);
+    root.addChild(h);
 
 
-    root.addChild(melee_subtree);
   }
 
   void move(Direction direction, int speed){
@@ -142,6 +139,14 @@ class Enemy{
     }
   }
 
+	void all_range_shot(){
+			int ways = 100;
+			for(float d=0; d<2*PI; d+=2*PI/ways){
+					Bullet bullet = new Bullet(position.x, position.y, 5, d);
+					bullets.add(bullet);
+			}
+	}
+
 
   void normal_shot(ArrayList<Bullet> bullets){
     int bullet_speed = 10;
@@ -164,6 +169,61 @@ class Enemy{
                                5, theta-HALF_PI);
     bullets.add(bullet);
   }
+
+	void random_spread_shot(){
+			int number_of_bullets = 5;
+			for(int i =0; i < number_of_bullets; i++){
+
+					float random_direction = random(-(HALF_PI/2), HALF_PI/2);
+
+					Bullet bullet = new Bullet(position.x + (enemy_width/2),
+																		 position.y + (enemy_height),
+																		 5, random_direction);
+					bullets.add(bullet);
+			}
+
+	}
+
+	void nway_shot(Player player){
+			float ways = 5;
+			float shot_degree = HALF_PI;
+			PVector target = player.position;
+			int target_width = player.player_width;
+			int target_height = player.player_height;
+
+			float pivot = atan2(target.y + target_width/2 - position.y - enemy_width/2,
+													target.x + target_height/2 - position.x - enemy_height) 
+													- HALF_PI;
+ 
+
+			// pivot 
+			Bullet bullet = new Bullet(position.x + (enemy_width/2),
+																 position.y + (enemy_height),
+																 5, pivot);
+			bullets.add(bullet);
+
+
+			// clockwise direction
+			float degree = pivot; 
+			for(float i=1; i<ways/2; i++){
+					degree -=  shot_degree/ways;
+					bullet = new Bullet(position.x + (enemy_width/2),
+															position.y + (enemy_height),
+															5, degree);
+					bullets.add(bullet);
+			}
+
+			// counterclockwise direction
+			degree = pivot; 
+			for(float i=1; i<ways/2; i++){
+					degree += shot_degree/ways;
+					bullet = new Bullet(position.x + (enemy_width/2),
+															position.y + (enemy_height),
+															5, degree);
+					bullets.add(bullet);
+			}
+	}
+
 
   void melleAttack(Sword sword){
     if(!sword.is_active)
