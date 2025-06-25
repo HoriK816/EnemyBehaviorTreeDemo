@@ -161,7 +161,7 @@ class SelectorNode extends ControlNode{
 
 class DecoratorNode extends BehaviorTreeNode{
 
-  ActionNode child;
+  BehaviorTreeNode child;
 
   DecoratorNode(String node_name){
     super(node_name);
@@ -221,9 +221,7 @@ class RepeaterNode extends DecoratorNode{
     switch(result){
       case SUCCESS:
         result = NodeStatus.RUNNING;
-        if(child.required_time < 2){
-            repeat_times--;
-        }
+        repeat_times--;
         break;
       case FAILURE:
         result = NodeStatus.FAILURE;
@@ -351,20 +349,27 @@ class ConditionNode extends LeafNode{
 class ActionNode extends LeafNode{
 
   int required_time;
+  int remained_time;
+  boolean is_finished;
+  boolean enable_repeat;
 
   ActionNode(String node_name, int required_time){
     super(node_name);
     this.required_time = required_time;
+    this.remained_time = required_time;
+    is_finished   = false;
+    enable_repeat = false;
   }
  
   NodeStatus Action(){
-    // println("required_time: ",required_time);
-    if(0 < required_time){
-      required_time--;
-      // println("required time : ", required_time);
+    if(0 < remained_time){
+      remained_time--;
       return NodeStatus.RUNNING;
-    }
-    else{
+    }else{
+      if(enable_repeat){
+        is_finished = false;
+        remained_time = required_time;
+      }
       return NodeStatus.SUCCESS;
     }
   }

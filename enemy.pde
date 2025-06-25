@@ -40,123 +40,115 @@ class Enemy{
 
   void createBehaviorTree(){
 
-    // danamku 2
-    RepeaterNode                 aj = new RepeaterNode("aj", 100);
-    EnemyRangeAttack             ak = new EnemyRangeAttack("ak", 10, enemy, player);
+    RandomNumberStack r_stack = new RandomNumberStack();
 
-    aj.setChild(ak);
-    root.addChild(aj);
+    // melee
+    SelectorNode     b = new SelectorNode("b");
+    InverterNode     c = new InverterNode("c");
+    IsShortRange     d = new IsShortRange(300, player, enemy);
+    SequenceNode     e = new SequenceNode("e");
+    CloseToPlayer    f = new CloseToPlayer("close to player", 30, enemy, player);
+    EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
+    c.setChild(d);
+    e.addChild(f);
+    e.addChild(g);
+    b.addChild(c);
+    b.addChild(e);
 
-    /*RandomNumberStack r_stack = new RandomNumberStack();*/
+    root.addChild(b); 
 
+    // move or shot
+    SelectorNode    h = new SelectorNode("h");
+    IsShortRange    i = new IsShortRange(300, player, enemy);
+    h.addChild(i);
 
-    /*// melee*/
-    /*SelectorNode     b = new SelectorNode("b");*/
-    /*InverterNode     c = new InverterNode("c");*/
-    /*IsShortRange     d = new IsShortRange(300, player, enemy);*/
-    /*SequenceNode     e = new SequenceNode("e");*/
-    /*CloseToPlayer    f = new CloseToPlayer("close to player", 30, enemy, player);*/
-    /*EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);*/
-    /*c.setChild(d);*/
-    /*e.addChild(f);*/
-    /*e.addChild(g);*/
-    /*b.addChild(c);*/
-    /*b.addChild(e);*/
+    SequenceNode    j = new SequenceNode("j"); 
+    RandomGenerator k = new RandomGenerator(r_stack);
+    j.addChild(k);
 
-    /*root.addChild(b); */
-
-    /*// move or shot*/
-    /*SelectorNode    h = new SelectorNode("h");*/
-    /*IsShortRange    i = new IsShortRange(300, player, enemy);*/
-    /*h.addChild(i);*/
-
-    /*SequenceNode    j = new SequenceNode("j"); */
-    /*RandomGenerator k = new RandomGenerator(r_stack);*/
-    /*j.addChild(k);*/
-
-    /*// move*/
-    /*SelectorNode                l = new SelectorNode("l");   */
-    /*InverterNode                m = new InverterNode("m");    */
-    /*IsRandomNumberOverThreshold n = new IsRandomNumberOverThreshold(50, r_stack);*/
-    /*SequenceNode                o = new SequenceNode("o");*/
-    /*RandomEnemyWalk             p = new RandomEnemyWalk("p", 300, enemy);*/
-    /*m.setChild(n);*/
-    /*o.addChild(p);*/
-    /*l.addChild(m);*/
-    /*l.addChild(o);*/
-    /*j.addChild(l);*/
+    // move
+    SelectorNode                l = new SelectorNode("l");   
+    InverterNode                m = new InverterNode("m");    
+    IsRandomNumberOverThreshold n = new IsRandomNumberOverThreshold(70, r_stack);
+    SequenceNode                o = new SequenceNode("o");
+    RandomEnemyWalk             p = new RandomEnemyWalk("p", 300, enemy);
+    m.setChild(n);
+    o.addChild(p);
+    l.addChild(m);
+    l.addChild(o);
+    j.addChild(l);
    
-    /*SelectorNode                 q = new SelectorNode("q");*/
-    /*IsRandomNumberOverThreshold rs = new IsRandomNumberOverThreshold(50, r_stack);*/
-    /*q.addChild(rs);*/
-    /*j.addChild(q);*/
+    SelectorNode                 q = new SelectorNode("q");
+    IsRandomNumberOverThreshold rs = new IsRandomNumberOverThreshold(70, r_stack);
+    q.addChild(rs);
+    j.addChild(q);
 
-    /*SequenceNode t = new SequenceNode("t");*/
+    SequenceNode t = new SequenceNode("t");
 
-    /*RandomGenerator u = new RandomGenerator(r_stack);*/
-    /*t.addChild(u);*/
+    RandomGenerator u = new RandomGenerator(r_stack);
+    t.addChild(u);
 
-    /*// danmaku 1*/
-    /*SelectorNode                  w = new SelectorNode("w");*/
-    /*InverterNode                  x = new InverterNode("x");*/
-    /*IsRandomNumberOverThreshold   y = new IsRandomNumberOverThreshold(90, r_stack);*/
+    // danmaku 1
+    SelectorNode                  w = new SelectorNode("w");
+    InverterNode                  x = new InverterNode("x");
+    IsRandomNumberOverThreshold   y = new IsRandomNumberOverThreshold(70, r_stack);
 
-    /*x.setChild(y);*/
+    x.setChild(y);
 
-    /*SequenceNode                  z = new SequenceNode("z");*/
-      /*RepeaterNode                 aa = new RepeaterNode("aa", 2);	*/
-    /*SequenceNode                 ab = new SequenceNode("ab");*/
-    /*EnemyAllRangeShot            ac = new EnemyAllRangeShot("ac", 10, enemy);*/
-      /*RepeaterNode                 ad = new RepeaterNode("aa", 3);	*/
-        /*EnemyNWayShot                ae = new EnemyNWayShot("enemy nway", 20, enemy, player);*/
+    SequenceNode                  z = new SequenceNode("z");
+    RepeaterNode                 aa = new RepeaterNode("aa", 2);	
+    SequenceNode                 ab = new SequenceNode("ab");
+    EnemyAllRangeShot            ac = new EnemyAllRangeShot("ac", 10, enemy);
+    RepeaterNode                 ad = new RepeaterNode("aa", 3);	
+    EnemyNWayShot                ae = new EnemyNWayShot("enemy nway", 20, enemy, player);
 
-    /*ad.setChild(ae);*/
-    /*ab.addChild(ac);*/
-    /*ab.addChild(ad);*/
-    /*aa.setChild(ab);*/
-    /*z.addChild(aa);*/
+    ad.setChild(ae);
+    ab.addChild(ac);
+    ab.addChild(ad);
+    aa.setChild(ab);
+    z.addChild(aa);
 
-    /*w.addChild(x);*/
-    /*w.addChild(z);*/
-    /*t.addChild(w);*/
+    w.addChild(x);
+    w.addChild(z);
+    t.addChild(w);
 
-    /*// danamku 2*/
-    /*SelectorNode                 af = new SelectorNode("af"); */
-    /*InverterNode                 ag = new InverterNode("ag");*/
-    /*IsRandomNumberBetweenAandB   ah = new IsRandomNumberBetweenAandB(80, 90, r_stack);*/
-    /*SequenceNode                 ai = new SequenceNode("aj");*/
-    /*RepeaterNode                 aj = new RepeaterNode("aj", 100);*/
-    /*EnemyRangeAttack             ak = new EnemyRangeAttack("ak", 10, enemy, player);*/
+    // danamku 2
+    SelectorNode                 af = new SelectorNode("af"); 
+    InverterNode                 ag = new InverterNode("ag");
+    IsRandomNumberBetweenAandB   ah = new IsRandomNumberBetweenAandB(65, 70, r_stack);
+    SequenceNode                 ai = new SequenceNode("aj");
+    RepeaterNode                 aj = new RepeaterNode("aj", 100);
+    EnemyRangeAttack             ak = new EnemyRangeAttack("ak", 1, enemy, player);
 
-    /*ag.setChild(ah);*/
-    /*aj.setChild(ak);*/
-    /*ai.addChild(aj);*/
+    ag.setChild(ah);
+    aj.setChild(ak);
+    ai.addChild(aj);
 
-    /*af.addChild(ag);*/
-    /*af.addChild(ai);*/
-    /*t.addChild(af);*/
+    af.addChild(ag);
+    af.addChild(ai);
+    t.addChild(af);
 
-    /*// normal shot*/
-    /*SelectorNode                 al = new SelectorNode("al");*/
-    /*IsRandomNumberOverThreshold amn = new IsRandomNumberOverThreshold(80, r_stack);*/
-    /*SequenceNode                 ao = new SequenceNode("ao");*/
-    /*EnemyRangeAttack             ap  = new EnemyRangeAttack("ap", 10, enemy, player);*/
+    // normal shot
+    SelectorNode                 al = new SelectorNode("al");
+    IsRandomNumberOverThreshold amn = new IsRandomNumberOverThreshold(65, r_stack);
+    SequenceNode                 ao = new SequenceNode("ao");
+    EnemyRangeAttack             ap  = new EnemyRangeAttack("ap", 10, enemy, player);
 
-    /*ao.addChild(ap);*/
-    /*al.addChild(amn);*/
-    /*al.addChild(ao);*/
-    /*t.addChild(al);*/
+    ao.addChild(ap);
+    al.addChild(amn);
+    al.addChild(ao);
+    t.addChild(al);
 
-    /*ReleaseRandomStackTop bb = new ReleaseRandomStackTop(r_stack);*/
-    /*t.addChild(bb);*/
+    ReleaseRandomStackTop bb = new ReleaseRandomStackTop(r_stack);
+    t.addChild(bb);
     
-    /*q.addChild(t);*/
+    q.addChild(t);
     
-    /*ReleaseRandomStackTop ba = new ReleaseRandomStackTop(r_stack);*/
-    /*j.addChild(ba);*/
-    /*h.addChild(j);*/
+    ReleaseRandomStackTop ba = new ReleaseRandomStackTop(r_stack);
+    j.addChild(ba);
+    h.addChild(j);
 
-    /*root.addChild(h);*/
+    root.addChild(h);
   }
 
   void move(Direction direction, int speed){

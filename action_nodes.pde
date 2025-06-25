@@ -56,7 +56,7 @@ class RandomEnemyWalk extends ActionNode{
 
     // move character
     if(this.move_count == path.number_of_movement){
-      required_time = 0;
+      remained_time = 0;
     }else{
       Direction move_dir = path.move_direction.get(this.move_count);
       int move_speed = path.move_speed.get(this.move_count);
@@ -114,7 +114,7 @@ class CloseToPlayer extends ActionNode{
 
     // move character
     if(this.move_count == path.number_of_movement){
-      required_time = 0;
+      remained_time = 0;
     }else{
       Direction move_dir = path.move_direction.get(this.move_count);
       int move_speed = path.move_speed.get(this.move_count);
@@ -150,22 +150,25 @@ class EnemyRangeAttack extends ActionNode{
 	Enemy enemy;
 	Player player;
 	ArrayList<Bullet> bullet;
-  boolean finish_attack;
  
-  EnemyRangeAttack(String node_name, int required_time, Enemy enemy, Player player){
+  EnemyRangeAttack(String node_name, int required_time,
+                   Enemy enemy, Player player)
+  {
     super(node_name, required_time);
+
 		this.player = player;
-		this.enemy = enemy;
+		this.enemy  = enemy;
 		this.bullet = enemy_bullets;
-    finish_attack = false;
+    this.enable_repeat = true;
   };
 
   @Override
   NodeStatus Action(){
-    if(!finish_attack){
+    if(!is_finished){
 	    enemy.aim_shot(bullet, player);
-      finish_attack = true;
+      is_finished = true;
     }
+
     NodeStatus status = super.Action(); 
 		return status;
   }
@@ -175,22 +178,23 @@ class EnemyAllRangeShot extends ActionNode{
 	Enemy enemy;
 	Player player;
 	ArrayList<Bullet> bullet;
-  boolean finish_attack;
  
   EnemyAllRangeShot(String node_name, int required_time, Enemy enemy){
     super(node_name, required_time);
+
 		this.player = player;
 		this.enemy = enemy;
 		this.bullet = enemy_bullets;
-    finish_attack = false;
+    this.enable_repeat = true;
   };
 
   @Override
   NodeStatus Action(){
-    if(!finish_attack){
+    if(!is_finished){
 	    enemy.all_range_shot(bullet);
-      finish_attack = true;
+      is_finished = true;
     }
+
     NodeStatus status = super.Action(); 
 		return status;
   }
@@ -201,22 +205,23 @@ class EnemyNWayShot extends ActionNode{
 	Enemy enemy;
 	Player player;
 	ArrayList<Bullet> bullet;
-  boolean finish_attack;
  
   EnemyNWayShot(String node_name, int required_time, Enemy enemy, Player player){
     super(node_name, required_time);
+
 		this.player = player;
 		this.enemy = enemy;
 		this.bullet = enemy_bullets;
-    finish_attack = false;
+    this.enable_repeat = true;
   };
 
   @Override
   NodeStatus Action(){
-    if(!finish_attack){
+    if(!is_finished){
 	    enemy.nway_shot(bullet, player);
-      finish_attack = true;
+      is_finished = true;
     }
+
     NodeStatus status = super.Action(); 
 		return status;
   }
