@@ -8,3 +8,9 @@ application.windows32
 application.windows64
 application.macosx
 out
+
+# processing 
+.*.pde.swp
+sketch.properties
+# vim 
+*.swp
