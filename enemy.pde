@@ -42,6 +42,7 @@ class Enemy{
     RandomNumberStack r_stack = new RandomNumberStack();
 
 
+    /*// melee*/
     /*SelectorNode     b = new SelectorNode("b");*/
     /*InverterNode     c = new InverterNode("c");*/
     /*IsShortRange     d = new IsShortRange(300, player, enemy);*/
@@ -53,62 +54,101 @@ class Enemy{
     /*e.addChild(g);*/
     /*b.addChild(c);*/
     /*b.addChild(e);*/
+
     /*root.addChild(b); */
 
-    /*SelectorNode    h = new SelectorNode("h");*/
-    /*IsShortRange    i = new IsShortRange(300, player, enemy);*/
-    /*h.addChild(i);*/
+    // move or shot
+    SelectorNode    h = new SelectorNode("h");
+    IsShortRange    i = new IsShortRange(300, player, enemy);
+    h.addChild(i);
 
-    /*SequenceNode    j = new SequenceNode("j"); */
-    /*RandomGenerator k = new RandomGenerator(r_stack);*/
-    /*j.addChild(k);*/
+    SequenceNode    j = new SequenceNode("j"); 
+    RandomGenerator k = new RandomGenerator(r_stack);
+    j.addChild(k);
 
-    /*SelectorNode                l = new SelectorNode("l");   */
-    /*InverterNode                m = new InverterNode("m");    */
-    /*IsRandomNumberOverThreshold n = new IsRandomNumberOverThreshold(50, r_stack);*/
-    /*SequenceNode                o = new SequenceNode("o");*/
-    /*RandomEnemyWalk             p = new RandomEnemyWalk("p", 300, enemy);*/
-    /*m.setChild(n);*/
-    /*o.addChild(p);*/
-    /*l.addChild(m);*/
-    /*l.addChild(o);*/
-    /*j.addChild(l);*/
+    // move
+    SelectorNode                l = new SelectorNode("l");   
+    InverterNode                m = new InverterNode("m");    
+    IsRandomNumberOverThreshold n = new IsRandomNumberOverThreshold(50, r_stack);
+    SequenceNode                o = new SequenceNode("o");
+    RandomEnemyWalk             p = new RandomEnemyWalk("p", 300, enemy);
+    m.setChild(n);
+    o.addChild(p);
+    l.addChild(m);
+    l.addChild(o);
+    j.addChild(l);
    
-    /*SelectorNode                 q = new SelectorNode("q");*/
-    /*IsRandomNumberOverThreshold rs = new IsRandomNumberOverThreshold(50, r_stack);*/
-    /*EnemyAttack                  t = new EnemyAttack("t", 1, enemy, player);*/
-    /*q.addChild(rs);*/
-    /*q.addChild(t);*/
-    /*j.addChild(q);*/
-    /*h.addChild(j);*/
-    /*root.addChild(h);*/
+    SelectorNode                 q = new SelectorNode("q");
+    IsRandomNumberOverThreshold rs = new IsRandomNumberOverThreshold(50, r_stack);
+    q.addChild(rs);
+    j.addChild(q);
+
+    SequenceNode t = new SequenceNode("t");
 
     RandomGenerator u = new RandomGenerator(r_stack);
-    root.addChild(u);
+    t.addChild(u);
 
-    SelectorNode                w = new SelectorNode("w");
-    InverterNode                x = new InverterNode("x");
-    IsRandomNumberOverThreshold y = new IsRandomNumberOverThreshold(90, r_stack);
+    // danmaku 1
+    SelectorNode                  w = new SelectorNode("w");
+    InverterNode                  x = new InverterNode("x");
+    IsRandomNumberOverThreshold   y = new IsRandomNumberOverThreshold(90, r_stack);
+
     x.setChild(y);
-    w.addChild(x);
 
-    SequenceNode       z = new SequenceNode("z");
-	  RepeaterNode      aa = new RepeaterNode("aa", 2);	
-    SequenceNode      ab = new SequenceNode("ab");
-    EnemyAllRangeShot ac = new EnemyAllRangeShot("ac", 10, enemy);
-	  RepeaterNode      ad = new RepeaterNode("aa", 3);	
-		EnemyNWayShot     ae = new EnemyNWayShot("enemy nway", 20, enemy, player);
+    SequenceNode                  z = new SequenceNode("z");
+	  RepeaterNode                 aa = new RepeaterNode("aa", 2);	
+    SequenceNode                 ab = new SequenceNode("ab");
+    EnemyAllRangeShot            ac = new EnemyAllRangeShot("ac", 10, enemy);
+	  RepeaterNode                 ad = new RepeaterNode("aa", 3);	
+		EnemyNWayShot                ae = new EnemyNWayShot("enemy nway", 20, enemy, player);
+
     ad.setChild(ae);
     ab.addChild(ac);
     ab.addChild(ad);
     aa.setChild(ab);
     z.addChild(aa);
-    w.addChild(w);
-    
-    
 
-    root.addChild(w);
-		
+    w.addChild(x);
+    w.addChild(z);
+    t.addChild(w);
+
+    // danamku 2
+    SelectorNode                 af = new SelectorNode("af"); 
+    InverterNode                 ag = new InverterNode("ag");
+    IsRandomNumberBetweenAandB   ah = new IsRandomNumberBetweenAandB(80, 90, r_stack);
+    SequenceNode                 ai = new SequenceNode("aj");
+    RepeaterNode                 aj = new RepeaterNode("aj", 100);
+    EnemyRangeAttack             ak = new EnemyRangeAttack("ak", 10, enemy, player);
+
+    ag.setChild(ah);
+    aj.setChild(ak);
+    ai.addChild(aj);
+
+    af.addChild(ag);
+    af.addChild(ai);
+    t.addChild(af);
+
+    // normal shot
+    SelectorNode                 al = new SelectorNode("al");
+    IsRandomNumberOverThreshold amn = new IsRandomNumberOverThreshold(80, r_stack);
+    SequenceNode                 ao = new SequenceNode("ao");
+    EnemyRangeAttack             ap  = new EnemyRangeAttack("ap", 10, enemy, player);
+
+    ao.addChild(ap);
+    al.addChild(amn);
+    al.addChild(ao);
+    t.addChild(al);
+
+    ReleaseRandomStackTop bb = new ReleaseRandomStackTop(r_stack);
+    t.addChild(bb);
+	
+    q.addChild(t);
+    
+    ReleaseRandomStackTop ba = new ReleaseRandomStackTop(r_stack);
+    j.addChild(ba);
+    h.addChild(j);
+
+    root.addChild(h);
   }
 
   void move(Direction direction, int speed){

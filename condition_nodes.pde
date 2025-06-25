@@ -87,3 +87,46 @@ class IsRandomNumberOverThreshold extends ConditionNode{
 
 }
 
+class IsRandomNumberBetweenAandB extends ConditionNode{
+
+  int min_a;
+  int max_b;
+  RandomNumberStack random_stack;
+
+  IsRandomNumberBetweenAandB(int min_a, int max_b, RandomNumberStack stack){
+    super("is_random_number_over_threshold"); 
+    this.min_a = min_a;
+    this.max_b = max_b;
+    this.random_stack = stack;
+  }
+
+  void checkRandomNumber(){
+    // random_stack.dmpStack();
+    int random_number = random_stack.refferStackTop();
+    println("reffer -> ", random_number);
+    if(min_a <= random_number && random_number < max_b){
+      this.is_met = true;
+    }else{
+      this.is_met = false;
+    }
+  }
+
+  @Override
+  NodeStatus evalNode(){
+    checkRandomNumber();
+    dumpResult();
+    NodeStatus status = super.evalNode();
+    // super.printName();
+    return status;
+  }
+
+  // for debugging
+  void dumpResult(){
+    if(this.is_met){
+      println("It's over! Threshold : (", min_a,",",max_b,")");
+    }else{
+      println("It's not over! Threshold : (", min_a,",",max_b,")");
+    }
+  }
+
+}

@@ -146,13 +146,13 @@ class CloseToPlayer extends ActionNode{
   }
 }
  
-class EnemyAttack extends ActionNode{
+class EnemyRangeAttack extends ActionNode{
 	Enemy enemy;
 	Player player;
 	ArrayList<Bullet> bullet;
   boolean finish_attack;
  
-  EnemyAttack(String node_name, int required_time, Enemy enemy, Player player){
+  EnemyRangeAttack(String node_name, int required_time, Enemy enemy, Player player){
     super(node_name, required_time);
 		this.player = player;
 		this.enemy = enemy;
