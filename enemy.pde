@@ -39,23 +39,24 @@ class Enemy{
   }
 
   void createBehaviorTree(){
+
     RandomNumberStack r_stack = new RandomNumberStack();
 
 
-    /*// melee*/
-    /*SelectorNode     b = new SelectorNode("b");*/
-    /*InverterNode     c = new InverterNode("c");*/
-    /*IsShortRange     d = new IsShortRange(300, player, enemy);*/
-    /*SequenceNode     e = new SequenceNode("e");*/
-    /*CloseToPlayer    f = new CloseToPlayer("close to player", 30, enemy, player);*/
-    /*EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);*/
-    /*c.setChild(d);*/
-    /*e.addChild(f);*/
-    /*e.addChild(g);*/
-    /*b.addChild(c);*/
-    /*b.addChild(e);*/
+    // melee
+    SelectorNode     b = new SelectorNode("b");
+    InverterNode     c = new InverterNode("c");
+    IsShortRange     d = new IsShortRange(300, player, enemy);
+    SequenceNode     e = new SequenceNode("e");
+    CloseToPlayer    f = new CloseToPlayer("close to player", 30, enemy, player);
+    EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
+    c.setChild(d);
+    e.addChild(f);
+    e.addChild(g);
+    b.addChild(c);
+    b.addChild(e);
 
-    /*root.addChild(b); */
+    root.addChild(b); 
 
     // move or shot
     SelectorNode    h = new SelectorNode("h");
@@ -96,11 +97,11 @@ class Enemy{
     x.setChild(y);
 
     SequenceNode                  z = new SequenceNode("z");
-	  RepeaterNode                 aa = new RepeaterNode("aa", 2);	
+      RepeaterNode                 aa = new RepeaterNode("aa", 2);	
     SequenceNode                 ab = new SequenceNode("ab");
     EnemyAllRangeShot            ac = new EnemyAllRangeShot("ac", 10, enemy);
-	  RepeaterNode                 ad = new RepeaterNode("aa", 3);	
-		EnemyNWayShot                ae = new EnemyNWayShot("enemy nway", 20, enemy, player);
+      RepeaterNode                 ad = new RepeaterNode("aa", 3);	
+        EnemyNWayShot                ae = new EnemyNWayShot("enemy nway", 20, enemy, player);
 
     ad.setChild(ae);
     ab.addChild(ac);
@@ -141,7 +142,7 @@ class Enemy{
 
     ReleaseRandomStackTop bb = new ReleaseRandomStackTop(r_stack);
     t.addChild(bb);
-	
+    
     q.addChild(t);
     
     ReleaseRandomStackTop ba = new ReleaseRandomStackTop(r_stack);

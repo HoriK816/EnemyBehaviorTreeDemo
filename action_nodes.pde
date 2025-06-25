@@ -231,8 +231,8 @@ class EnemyMeleeAttack extends ActionNode{
               		 Enemy enemy, Sword sword)
   {
     super(node_name, required_time);
-	  enemy = enemy;
-    sword = sword;
+    this.enemy = enemy;
+    this.sword = sword;
   }
 
   @Override
