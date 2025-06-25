@@ -260,16 +260,16 @@ class RandomNumberStack{
   void push(int random_number){
     this.random_number_stack[stack_top] = random_number;
     this.stack_top++;
-    println("---pushed -------");
-    this.dumpStack();
-    println("-----------------");
+    /*println("---pushed -------");*/
+    /*this.dumpStack();*/
+    /*println("-----------------");*/
   }
 
   void removeStackTop(){
     stack_top--;
-    println("---remove stack top-------");
-    this.dumpStack();
-    println("-----------------");
+    /*println("---remove stack top-------");*/
+    /*this.dumpStack();*/
+    /*println("-----------------");*/
   }
 
   // for debugging

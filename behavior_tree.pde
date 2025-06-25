@@ -161,7 +161,7 @@ class SelectorNode extends ControlNode{
 
 class DecoratorNode extends BehaviorTreeNode{
 
-  BehaviorTreeNode child;
+  ActionNode child;
 
   DecoratorNode(String node_name){
     super(node_name);
@@ -214,13 +214,16 @@ class RepeaterNode extends DecoratorNode{
 
   @Override
   NodeStatus evalNode(){
-    NodeStatus result;
-    result = child.evalNode();
+    NodeStatus result = child.evalNode();
+    println("child result :", result);
+    printRepeatTimes();
 
     switch(result){
       case SUCCESS:
         result = NodeStatus.RUNNING;
-        repeat_times--;
+        if(child.required_time < 2){
+            repeat_times--;
+        }
         break;
       case FAILURE:
         result = NodeStatus.FAILURE;
@@ -233,10 +236,12 @@ class RepeaterNode extends DecoratorNode{
     if(repeat_times == 0){
       return NodeStatus.SUCCESS;
     }
-
     return result;
   }
 
+  void printRepeatTimes(){
+    println("repeat_times : ", this.repeat_times);
+  }
 }
 
 
