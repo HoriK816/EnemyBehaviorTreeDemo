@@ -1,160 +1,150 @@
+
 enum NodeStatus{
-  SUCCESS, FAILURE, RUNNING;
+    SUCCESS, FAILURE, RUNNING;
 }
 
 
 class BehaviorTreeNode{
+    String name;
+    NodeStatus status;
 
-  String name;
-  NodeStatus status;
+    BehaviorTreeNode(String node_name){
+        this.name = node_name;
+    }
 
-  BehaviorTreeNode(String node_name){
-    name = node_name;
-  }
+    /* must override this method */
+    NodeStatus evalNode(){
+        return null;
+    }
 
-  // must override this method
-  NodeStatus evalNode(){
-    return null;
-  }
-
-  // for debug 
-  void printName(){
-    println("the name of this node is ", name); 
-  }
-
+    /* debug function */
+    void printName(){
+        println("the name of this node is ", name); 
+    }
 }
 
 
 class ControlNode extends BehaviorTreeNode{
+    ArrayList<BehaviorTreeNode> children;
 
-  ArrayList<BehaviorTreeNode> children;
-
-  ControlNode(String node_name){
-    super(node_name);
-    children = new ArrayList<BehaviorTreeNode>();
-  }
-
-  void addChild(BehaviorTreeNode new_node){
-    children.add(new_node);  
-  }
-
-  void printAllChildren(){
-    int len = children.size();
-    for(int i=0; i<len; i++){
-      children.get(i).printName();
+    ControlNode(String node_name){
+        super(node_name);
+        this.children = new ArrayList<BehaviorTreeNode>();
     }
-  }
+
+    void addChild(BehaviorTreeNode new_node){
+        children.add(new_node);  
+    }
+
+    void printAllChildren(){
+        int len = children.size();
+
+        for(int i=0; i<len; i++){
+            children.get(i).printName();
+        }
+    }
 }
 
 
 class SequenceNode extends ControlNode{
+    int numberChildren         = 0;
+    int numberExecutedChildren = 0;
 
-  int number_children;
-  int number_executed;
-
-  SequenceNode(String node_name){
-    super(node_name);
-    number_executed  = 0;
-  }
-
-  NodeStatus executeAllChildren(){
-
-    NodeStatus sequence_status = null;
-
-    number_children = this.children.size();
-
-    // dump the sequence node
-    /*if(this.name != "root"){*/
-        /*[>println(this.name);<]*/
-        /*[>for(int i=0; i<number_children; i++){<]*/
-          /*[>println("----", this.children.get(i).name);<]*/
-        /*[>}<]*/
-        /*println("executed : ", number_executed);*/
-
-    /*}*/
-
-
-    if(number_executed == number_children){
-      sequence_status = NodeStatus.SUCCESS;
-    }else{
-
-      // check the child node currently being processed
-      BehaviorTreeNode process_node = children.get(number_executed);
-      NodeStatus process_result = process_node.evalNode();
-  
-      switch(process_result){
-        case SUCCESS:
-          number_executed++;
-          sequence_status = NodeStatus.RUNNING;
-          break;
-        case FAILURE:
-          number_executed++;
-          sequence_status = NodeStatus.RUNNING;
-          break;
-        case RUNNING:
-          sequence_status = NodeStatus.RUNNING;
-          break;
-      }
+    SequenceNode(String node_name){
+        super(node_name);
     }
-    return sequence_status;
-  }
 
-  @Override
-  NodeStatus evalNode(){
-    NodeStatus result;
-    result = this.executeAllChildren();
-    return result;
-  }
+    NodeStatus executeAllChildren(){
+        BehaviorTreeNode processNode;
+        NodeStatus sequenceStatus = null;
+        NodeStatus processResult;
+
+        numberChildren = this.children.size();
+        
+        if(numberExecutedChildren == numberChildren){
+            return NodeStatus.SUCCESS;
+        }else{ // FIXME: is the else statement needed ???
+
+            // check the child node currently being processed
+            processNode = children.get(numberExecutedChildren);
+
+            // decide sequence status depend on the result of the current node.
+            processResult = processNode.evalNode();
+            switch(processResult){
+                case SUCCESS:
+                    numberExecutedChildren++;
+                    sequenceStatus = NodeStatus.RUNNING;
+                    break;
+                case FAILURE:
+                      numberExecutedChildren++;
+                      sequenceStatus = NodeStatus.RUNNING;
+                      break;
+                case RUNNING:
+                      sequenceStatus = NodeStatus.RUNNING;
+                      break;
+            }
+        }
+        return sequenceStatus;
+    }
+
+    @Override
+    NodeStatus evalNode(){
+        NodeStatus result;
+        result = this.executeAllChildren();
+        return result;
+    }
 }
 
 
 class SelectorNode extends ControlNode{
 
-  int number_children;
-  int number_executed;
-    
-  SelectorNode(String node_name){
-    super(node_name);
-    number_executed = 0;
-  }
+    int number_children;
+    int number_executed;
 
-  NodeStatus executeChildren(){
-
-    NodeStatus selector_status = null;
-
-    BehaviorTreeNode process_node = children.get(number_executed);
-    NodeStatus node_result = process_node.evalNode();
- 
-    number_children = this.children.size();
-
-    if(number_executed == number_children){
-      // reaching the final node means that no node returns SUCCESS
-      selector_status = NodeStatus.FAILURE;
-
-    }else{
-
-      switch(node_result){
-        case SUCCESS:
-          selector_status = NodeStatus.SUCCESS;
-          break;
-        case FAILURE:
-          number_executed++;
-          selector_status = NodeStatus.RUNNING;
-          break;
-        case RUNNING:
-          selector_status = NodeStatus.RUNNING;
-          break;
-        }
+    SelectorNode(String node_name){
+        super(node_name);
+        number_executed = 0;
     }
-    return selector_status;
-  }
 
-  @Override
-  NodeStatus evalNode(){
-    NodeStatus result;
-    result = executeChildren();
-    return result;
-  }
+    NodeStatus executeChildren(){
+        BehaviorTreeNode process_node;
+        NodeStatus selector_status = null;
+        NodeStatus node_result;
+
+        number_children = this.children.size();
+
+        if(number_executed == number_children){
+            // reaching the final node means that no node returns SUCCESS
+            selector_status = NodeStatus.FAILURE;
+            return NodeStatus.FAILURE;
+
+        }else{
+
+            process_node = children.get(number_executed);
+            node_result = process_node.evalNode();
+
+            switch(node_result){
+                case SUCCESS:
+                    selector_status = NodeStatus.SUCCESS;
+                    break;
+                case FAILURE:
+                    number_executed++;
+                    selector_status = NodeStatus.RUNNING;
+                    break;
+                case RUNNING:
+                    selector_status = NodeStatus.RUNNING;
+                    break;
+            }
+        }
+        return selector_status;
+    }
+
+    @Override
+    NodeStatus evalNode(){
+        NodeStatus result;
+        result = executeChildren();
+        return result;
+    }
 
 }
 
