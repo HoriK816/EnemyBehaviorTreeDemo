@@ -8,17 +8,17 @@ class BehaviorTreeNode{
     String name;
     NodeStatus status;
 
-    BehaviorTreeNode(String node_name){
+    BehaviorTreeNode(String node_name) {
         this.name = node_name;
     }
 
     /* must override this method */
-    NodeStatus evalNode(){
+    NodeStatus evalNode() {
         return null;
     }
 
     /* debug function */
-    void printName(){
+    void printName() {
         println("the name of this node is ", name); 
     }
 }
@@ -27,68 +27,66 @@ class BehaviorTreeNode{
 class ControlNode extends BehaviorTreeNode{
     ArrayList<BehaviorTreeNode> children;
 
-    ControlNode(String node_name){
+    ControlNode(String node_name) {
         super(node_name);
         this.children = new ArrayList<BehaviorTreeNode>();
     }
 
-    void addChild(BehaviorTreeNode new_node){
+    void addChild(BehaviorTreeNode new_node) {
         children.add(new_node);  
     }
 
-    void printAllChildren(){
+    void printAllChildren() {
         int len = children.size();
 
-        for(int i=0; i<len; i++){
+        for (int i=0; i<len; i++) {
             children.get(i).printName();
         }
     }
 }
 
 
-class SequenceNode extends ControlNode{
+class SequenceNode extends ControlNode {
     int numberChildren         = 0;
     int numberExecutedChildren = 0;
 
-    SequenceNode(String node_name){
+    SequenceNode(String node_name) {
         super(node_name);
     }
 
-    NodeStatus executeAllChildren(){
+    NodeStatus executeAllChildren() {
         BehaviorTreeNode processNode;
         NodeStatus sequenceStatus = null;
         NodeStatus processResult;
 
         numberChildren = this.children.size();
-        
-        if(numberExecutedChildren == numberChildren){
+        if (numberExecutedChildren == numberChildren) {
             return NodeStatus.SUCCESS;
-        }else{ // FIXME: is the else statement needed ???
+        }
 
-            // check the child node currently being processed
-            processNode = children.get(numberExecutedChildren);
+        // check the child node currently being processed
+        processNode = children.get(numberExecutedChildren);
 
-            // decide sequence status depend on the result of the current node.
-            processResult = processNode.evalNode();
-            switch(processResult){
-                case SUCCESS:
-                    numberExecutedChildren++;
-                    sequenceStatus = NodeStatus.RUNNING;
-                    break;
-                case FAILURE:
-                      numberExecutedChildren++;
-                      sequenceStatus = NodeStatus.RUNNING;
-                      break;
-                case RUNNING:
-                      sequenceStatus = NodeStatus.RUNNING;
-                      break;
-            }
+        // decide sequence status depend on the result of the current node.
+        processResult = processNode.evalNode();
+        switch (processResult) {
+            case SUCCESS:
+                numberExecutedChildren++;
+                sequenceStatus = NodeStatus.RUNNING;
+                break;
+            case FAILURE:
+                  numberExecutedChildren++;
+                  sequenceStatus = NodeStatus.RUNNING;
+                  break;
+            case RUNNING:
+                  sequenceStatus = NodeStatus.RUNNING;
+                  break;
         }
         return sequenceStatus;
     }
 
     @Override
-    NodeStatus evalNode(){
+    NodeStatus evalNode() {
         NodeStatus result;
         result = this.executeAllChildren();
         return result;
@@ -96,34 +94,32 @@ class SequenceNode extends ControlNode{
 }
 
 
-class SelectorNode extends ControlNode{
+class SelectorNode extends ControlNode {
+    int number_children = 0;
+    int number_executed = 0;
 
-    int number_children;
-    int number_executed;
-
-    SelectorNode(String node_name){
+    SelectorNode (String node_name) {
         super(node_name);
-        number_executed = 0;
     }
 
-    NodeStatus executeChildren(){
+    NodeStatus executeChildren() {
         BehaviorTreeNode process_node;
         NodeStatus selector_status = null;
         NodeStatus node_result;
 
         number_children = this.children.size();
 
-        if(number_executed == number_children){
+        if (number_executed == number_children) {
             // reaching the final node means that no node returns SUCCESS
             selector_status = NodeStatus.FAILURE;
             return NodeStatus.FAILURE;
 
-        }else{
+        } else {
 
             process_node = children.get(number_executed);
             node_result = process_node.evalNode();
 
-            switch(node_result){
+            switch (node_result) {
                 case SUCCESS:
                     selector_status = NodeStatus.SUCCESS;
                     break;
@@ -140,7 +136,7 @@ class SelectorNode extends ControlNode{
     }
 
     @Override
-    NodeStatus evalNode(){
+    NodeStatus evalNode() {
         NodeStatus result;
         result = executeChildren();
         return result;
@@ -148,226 +144,209 @@ class SelectorNode extends ControlNode{
 
 }
 
+/* This is a base class for decorator nodes. */
+class DecoratorNode extends BehaviorTreeNode {
+    BehaviorTreeNode child;
 
-class DecoratorNode extends BehaviorTreeNode{
+    DecoratorNode(String node_name) {
+        super(node_name);
+    }
 
-  BehaviorTreeNode child;
-
-  DecoratorNode(String node_name){
-    super(node_name);
-  }
-
-  void setChild(BehaviorTreeNode new_node){
-    this.child = new_node;
-  }
-
+    void setChild(BehaviorTreeNode new_node) {
+        this.child = new_node;
+    }
 }
 
 
-class InverterNode extends DecoratorNode{
+/* InverterNode is a node to invert the result of child node and return it */
+class InverterNode extends DecoratorNode {
 
-  InverterNode(String node_name){
-    super(node_name);
-
-  }
-
-  @Override
-  NodeStatus evalNode(){
-    NodeStatus result;
-    result = child.evalNode();
-
-    switch(result){
-      case SUCCESS:
-        result = NodeStatus.FAILURE; 
-        break;
-      case FAILURE:
-        result = NodeStatus.SUCCESS;
-        break;
-      case RUNNING:
-        result = NodeStatus.RUNNING;
-        break;
+    InverterNode(String node_name) {
+        super(node_name);
     }
-    return result;
-  }
 
+    @Override
+    NodeStatus evalNode() {
+        NodeStatus result;
+        result = child.evalNode();
+
+        switch(result) {
+          case SUCCESS:
+            result = NodeStatus.FAILURE; 
+            break;
+          case FAILURE:
+            result = NodeStatus.SUCCESS;
+            break;
+          case RUNNING:
+            result = NodeStatus.RUNNING;
+            break;
+        }
+        return result;
+    }
 }
 
 
-class RepeaterNode extends DecoratorNode{
+/* RepeaterNode is a node to execute the specific child node repeatedly */
+class RepeaterNode extends DecoratorNode {
+    int repeatCount = 0;
 
-  int repeat_times;
-
-  RepeaterNode(String node_name, int repeat_times){
-    super(node_name);
-    this.repeat_times = repeat_times;
-  }
-
-  @Override
-  NodeStatus evalNode(){
-    NodeStatus result = child.evalNode();
-    println("child result :", result);
-    printRepeatTimes();
-
-    switch(result){
-      case SUCCESS:
-        result = NodeStatus.RUNNING;
-        repeat_times--;
-        break;
-      case FAILURE:
-        result = NodeStatus.FAILURE;
-        break;
-      case RUNNING:
-        result = NodeStatus.RUNNING;
-        break;
+    RepeaterNode(String nodeName, int repeatCount) {
+        super(nodeName);
+        this.repeatCount = repeatCount;
     }
 
-    if(repeat_times == 0){
-      return NodeStatus.SUCCESS;
-    }
-    return result;
-  }
+    @Override
+    NodeStatus evalNode() {
+        NodeStatus result = child.evalNode();
 
-  void printRepeatTimes(){
-    println("repeat_times : ", this.repeat_times);
-  }
+        // it's termination condition of this node.
+        if (repeatCount == 0) {
+            return NodeStatus.SUCCESS;
+        }
+
+        switch (result) {
+            case SUCCESS:
+                result = NodeStatus.RUNNING;
+                repeatCount--;
+                break;
+            case FAILURE:
+                result = NodeStatus.FAILURE;
+                break;
+            case RUNNING:
+                result = NodeStatus.RUNNING;
+                break;
+        }
+        return result;
+    }
 }
 
 
-class RetryUntilSuccessfulNode extends DecoratorNode{
+class RetryUntilSuccessfulNode extends DecoratorNode {
+    int number_attempt;
 
-  int number_attempt;
-  
-  RetryUntilSuccessfulNode(String node_name, int number_attempt){
-    super(node_name);
-    this.number_attempt =  number_attempt; 
-  }
-
-  @Override 
-  NodeStatus evalNode(){
-
-    NodeStatus result;
-    result = child.evalNode();
-
-    switch(result){
-      case SUCCESS:
-        result = NodeStatus.SUCCESS;
-        break;
-      case FAILURE:
-        result = NodeStatus.RUNNING;
-        number_attempt--;
-        break;
-      case RUNNING:
-        result = NodeStatus.RUNNING;
-        break;
+    RetryUntilSuccessfulNode(String node_name, int number_attempt) {
+        super(node_name);
+        this.number_attempt =  number_attempt; 
     }
 
-    if(number_attempt == 0){
-      result = NodeStatus.FAILURE;
+    @Override 
+    NodeStatus evalNode(){
+        NodeStatus result;
+
+        result = child.evalNode();
+        switch (result) {
+            case SUCCESS:
+                result = NodeStatus.SUCCESS;
+                break;
+            case FAILURE:
+                result = NodeStatus.RUNNING;
+                number_attempt--;
+                break;
+            case RUNNING:
+                result = NodeStatus.RUNNING;
+                break;
+        }
+
+        if (number_attempt == 0) {
+            result = NodeStatus.FAILURE;
+        }
+        return result;
     }
-
-    return result;
-  }
-
 }
 
 
 class KeepRunningUntilFailureNode extends DecoratorNode{
 
-  KeepRunningUntilFailureNode(String node_name){
-    super(node_name);
-  }
-
-  @Override
-  NodeStatus evalNode(){
-    
-    NodeStatus result;
-    result = child.evalNode();
-
-    switch(result){
-      case SUCCESS:
-        result = NodeStatus.RUNNING;
-        break;
-      case FAILURE:
-        result = NodeStatus.FAILURE;
-        break;
-      case RUNNING:
-        result = NodeStatus.RUNNING;
-        break;
+    KeepRunningUntilFailureNode(String node_name) {
+        super(node_name);
     }
 
-    return result;
-  }
+    @Override
+    NodeStatus evalNode() {
+        NodeStatus result;
 
+        result = child.evalNode();
+        switch (result) {
+          case SUCCESS:
+            result = NodeStatus.RUNNING;
+            break;
+          case FAILURE:
+            result = NodeStatus.FAILURE;
+            break;
+          case RUNNING:
+            result = NodeStatus.RUNNING;
+            break;
+        }
+        return result;
+    }
 }
 
+/* This is a base class for leaf nodes. */
 class LeafNode extends BehaviorTreeNode{ 
+    NodeStatus status;
 
-  NodeStatus status;
-  
-  LeafNode(String node_name){
-    super(node_name);
-  }
+    LeafNode(String node_name){
+        super(node_name);
+    }
 }
 
 
 class ConditionNode extends LeafNode{
-  
-  boolean is_met;
-  NodeStatus status;
+    boolean is_met = false;
+    NodeStatus status;
 
-  ConditionNode(String node_name){
-    super(node_name);
-    this.is_met = false;
-  }
-
-  void checkCondition(){
-    if(is_met){
-      status =  NodeStatus.SUCCESS;
-    }else{
-      status =  NodeStatus.FAILURE;
+    ConditionNode(String node_name){
+        super(node_name);
     }
-  }
 
-  @Override
-  NodeStatus evalNode(){
-    checkCondition();
-    return this.status; 
-  }
+    /*
+        NOTE: It's better that checkCondition() returns boolean value
+        depend on the condition...
+    */
+    void checkCondition(){
+        if(is_met){
+            status =  NodeStatus.SUCCESS;
+        }else{
+            status =  NodeStatus.FAILURE;
+        }
+    }
 
+    @Override
+    NodeStatus evalNode(){
+        checkCondition();
+        return this.status; 
+    }
 }
 
 class ActionNode extends LeafNode{
+    int required_time     = 0;
+    int remained_time     = 0;
+    boolean is_finished   = false;
+    boolean enable_repeat = false;
 
-  int required_time;
-  int remained_time;
-  boolean is_finished;
-  boolean enable_repeat;
-
-  ActionNode(String node_name, int required_time){
-    super(node_name);
-    this.required_time = required_time;
-    this.remained_time = required_time;
-    is_finished   = false;
-    enable_repeat = false;
-  }
- 
-  NodeStatus Action(){
-    if(0 < remained_time){
-      remained_time--;
-      return NodeStatus.RUNNING;
-    }else{
-      if(enable_repeat){
-        is_finished = false;
-        remained_time = required_time;
-      }
-      return NodeStatus.SUCCESS;
+    ActionNode(String node_name, int required_time){
+        super(node_name);
+        this.required_time = required_time;
+        this.remained_time = required_time;
     }
-  }
 
-  @Override 
-  NodeStatus evalNode(){
-    NodeStatus result;
-    result = this.Action();
-    return result;
-  }
+    NodeStatus Action(){
+        if(0 < remained_time){
+            remained_time--;
+            return NodeStatus.RUNNING;
+        }else{
+            if(enable_repeat){
+                is_finished = false;
+                remained_time = required_time;
+            }
+            return NodeStatus.SUCCESS;
+        }
+    }
+
+    @Override 
+    NodeStatus evalNode(){
+        NodeStatus result;
+        result = this.Action();
+        return result;
+    }
 }
