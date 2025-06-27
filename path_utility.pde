@@ -2,6 +2,7 @@ enum Direction {
    UP, LEFT, RIGHT, DOWN;
 }
 
+
 /* The class calculate the path to the destination. */
 class MovePath {
     ArrayList<Direction> movingDirection = new ArrayList<Direction>();
@@ -18,10 +19,10 @@ class MovePath {
 }
 
 
-class RouteCalculator {
+class PathCalculator {
     MovePath path;
 
-    RouteCalculator(MovePath path) {
+    PathCalculator(MovePath path) {
       this.path = path;
     }
 
