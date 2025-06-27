@@ -1,34 +1,37 @@
-class HPBar{
-
+class HPBar {
     int hp;
-    int max_hp;
+    int maxHp;
+    int width  = 400;      // the width of hp box  
+    int height = 50;       // the height of hp box
     PVector position;
+    color hpColor         = color(255, 140, 0);        // dark orange
+    color backgroundColor = color(255, 255, 255);      // black
 
-    int width = 400; 
-    int height = 50;
-
-    color background_color = color(255, 255, 255); // black
-    color hp_color = color(255, 140, 0); // dark orange
-
-    HPBar(int hp, int max_hp, PVector position){
-        this.hp = hp;
-        this.max_hp = max_hp;
+    HPBar(int hp, int maxHp, PVector position) {
+        this.hp       = hp;
+        this.maxHp    = maxHp;
         this.position = position;
     }
 
-    void draw(int hp){
-        fill(background_color);   
+    void draw(int hp) {
+        int hpLength;
+
+        /* draw the frame of hp box */
+        fill(backgroundColor);   
         rect(position.x, position.y, width, height);
 
-        int hp_length = calcHPLength();
+        /* paint hp color depend on the given hp value */
+        hpLength = calcHPLength();
+        fill(hpColor);
+        rect(position.x, position.y, hpLength, height); 
+
+        /* update hp*/
         this.hp = hp;
-        fill(hp_color);
-        rect(position.x, position.y, hp_length,height); 
     }
 
-    int calcHPLength(){
-        float left_ration = (float)hp / (float)max_hp;
-        return (int)(left_ration * width);
+    int calcHPLength() {
+        float  leftRatio = (float)hp / (float)maxHp;
+        int    hpLength  = (int)(leftRatio * width);
+        return hpLength;
     }
-
 }
