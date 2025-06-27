@@ -1,17 +1,18 @@
 /* This class implements the action that enemy walks to random destination  */ 
 class RandomEnemyWalk extends ActionNode {
-    Enemy enemy;
-    MovePath path = new MovePath();
-    boolean isRouteSet = false;
-    PVector dest;
+    MovePath path        = new MovePath();
+    boolean  isRouteSet  = false;
+    int      movingCount = 0;
+    Enemy    enemy;    
 
-    int move_count = 0;
-
-    RandomEnemyWalk(String node_name, int required_time, Enemy enemy) {
-        super(node_name, required_time);
+    RandomEnemyWalk(String node_name, int requiredTotalFrames, Enemy enemy) {
+        super(node_name, requiredTotalFrames);
         this.enemy = enemy;
     }
 
+    /* 
+    * the character moves to destination according to the calculated path
+    */
     @Override
     NodeStatus Action(){
         NodeStatus status;
@@ -19,110 +20,147 @@ class RandomEnemyWalk extends ActionNode {
         /* set random destination at a first */
         if(!isRouteSet){
             PVector dest = decideDestination(); 
-            calcPath(dest, enemy.position, enemy.max_speed);
+            calcPath(dest, enemy.position, enemy.maxSpeed);
         }
 
-        /* move character according to the calculated path */
-        if (this.move_count == path.numberOfMovement) {
-            remained_time = 0;
+        /* when the character reaches the destination */
+        if (movingCount == path.numberOfMovement) {
+            remainedFrames = 0;
+
+        /* move to destination */
         } else {
-          Direction move_dir = path.movingDirection.get(this.move_count);
-          int move_speed = path.movingSpeed.get(this.move_count);
-          enemy.move(move_dir, move_speed);
-        }
-        this.move_count++;
+            Direction movingDirection; 
+            int movingSpeed;
+            
+            /* get path information */
+            movingDirection = path.movingDirection.get(this.movingCount);
+            movingSpeed     = path.movingSpeed.get(this.movingCount);
 
+            /* move the character (enemy)*/
+            enemy.move(movingDirection, movingSpeed);
+        }
+        this.movingCount++;
+
+        /* execute process related to the remains frames at the method 
+         * in the super class, mainly */
         status = super.Action(); 
         return status;
     }
 
     PVector decideDestination() {
-        float dest_x = random(0, WINDOW_WIDTH);
-        float dest_y = random(0, WINDOW_HEIGHT);
+        float   dest_x;
+        float   dest_y;
+        PVector dest;
 
-        dest = new PVector(dest_x, dest_y);
+        /* decide the destination randomly */
+        dest_x = random(0, WINDOW_WIDTH);
+        dest_y = random(0, WINDOW_HEIGHT);
+        dest   = new PVector(dest_x, dest_y);
         return dest;
     }
 
-    void calcPath(PVector dest, PVector current_position, int max_speed) {
-        PathCalculator path_calculator = new PathCalculator(path);
+    void calcPath(PVector dest, PVector source, int maxSpeed) {
+        PathCalculator pathCalculator = new PathCalculator(path);
 
-        path = path_calculator.calcPath(dest, current_position, max_speed);
+        path       = pathCalculator.calcPath(dest, source, maxSpeed);
         isRouteSet = true;
     }
 }
 
 
+/* This class implements the action that enemy close to the player */
 class CloseToPlayer extends ActionNode {
-    Enemy enemy;
-    Player player;
-    boolean route_calc_done = false;
-    PVector dest;
-    MovePath path = new MovePath();
-    int move_count = 0;
+    MovePath path        = new MovePath();
+    boolean  isRouteSet  = false;
+    int      movingCount = 0;
+    Enemy    enemy;  
+    Player   player; // FIXME: it's not good. you must minimal access to fields.
 
-    CloseToPlayer(String node_name, int required_time, Enemy enemy, Player player){
-        super(node_name, required_time);
+    CloseToPlayer(String node_name, int requiredTotalFrames,
+                  Enemy enemy, Player player) {
+        super(node_name, requiredTotalFrames);
         this.enemy  = enemy;
         this.player = player;
     }
 
+    /* 
+    * the character moves to destination according to the calculated path
+    */
     @Override
     NodeStatus Action(){
-      if(!route_calc_done){
-        PVector dest = decideDestination(); 
-        calcPath(dest, enemy.position, enemy.max_speed);
-      }
+        NodeStatus status;
 
-      // move character
-      if(this.move_count == path.numberOfMovement){
-        remained_time = 0;
-      }else{
-        Direction move_dir = path.movingDirection.get(this.move_count);
-        int move_speed = path.movingSpeed.get(this.move_count);
-        enemy.move(move_dir, move_speed);
-      }
-      this.move_count++;
+        /* set random destination at a first */
+        if(!isRouteSet){
+            PVector dest = decideDestination(); 
+            calcPath(dest, enemy.position, enemy.maxSpeed);
+        }
 
-      NodeStatus status = super.Action(); 
-      return status;
+        /* when the character reaches the destination */
+        if (movingCount == path.numberOfMovement) {
+            remainedFrames = 0;
+
+        /* move to destination */
+        } else {
+            Direction movingDirection; 
+            int movingSpeed;
+            
+            /* get path information */
+            movingDirection = path.movingDirection.get(this.movingCount);
+            movingSpeed     = path.movingSpeed.get(this.movingCount);
+
+            /* move the character (enemy)*/
+            enemy.move(movingDirection, movingSpeed);
+        }
+        this.movingCount++;
+
+        /* execute process related to the remains frames at the method 
+         * in the super class, mainly */
+        status = super.Action(); 
+        return status;
     }
 
-    PVector decideDestination(){
-        float dest_x = player.position.x; 
-        float dest_y = player.position.y;
-        dest = new PVector(dest_x, dest_y);
+    PVector decideDestination() {
+        float   dest_x;
+        float   dest_y;
+        PVector dest;
+
+        dest_x = player.position.x; 
+        dest_y = player.position.y;
+        dest   = new PVector(dest_x, dest_y);
         return dest;
     }
 
-    void calcPath(PVector dest, PVector current_position, int max_speed){
-        PathCalculator path_calculator = new PathCalculator(path);
-        path = path_calculator.calcPath(dest, current_position, max_speed);
-        route_calc_done = true;
+    void calcPath(PVector dest, PVector source, int maxSpeed) {
+        PathCalculator pathCalculator = new PathCalculator(path);
+
+        path       = pathCalculator.calcPath(dest, source, maxSpeed);
+        isRouteSet = true;
     }
-  }
-   
+}
+
+
 class EnemyRangeAttack extends ActionNode{
-    Enemy enemy;
-    Player player;
+    Enemy enemy; // FIXME: it's not good. you must minimal access to fields.
+    Player player; // FIXME: it's not good. you must minimal access to fields.
     ArrayList<Bullet> bullet;
    
-    EnemyRangeAttack(String node_name, int required_time,
+    EnemyRangeAttack(String node_name, int requiredTotalFrames,
                      Enemy enemy, Player player) {
-        super(node_name, required_time);
+        super(node_name, requiredTotalFrames);
         this.player = player;
         this.enemy  = enemy;
         this.bullet = enemy_bullets;
-        this.enable_repeat = true;
+        this.enableRepeat = true;
     };
 
     @Override
     NodeStatus Action() {
         NodeStatus status; 
 
-        if (!is_finished) {
+        if (!isFinished) {
             enemy.aim_shot(bullet, player);
-            is_finished = true;
+            isFinished = true;
         }
 
         status = super.Action(); 
@@ -130,27 +168,28 @@ class EnemyRangeAttack extends ActionNode{
     }
 }
 
+
 class EnemyAllRangeShot extends ActionNode{
-    Enemy enemy;
-    Player player;
+    Enemy enemy; // FIXME: it's not good. you must minimal access to fields.
+    Player player; // FIXME: it's not good. you must minimal access to fields.
     ArrayList<Bullet> bullet;
    
-    EnemyAllRangeShot(String node_name, int required_time, Enemy enemy) {
-        super(node_name, required_time);
+    EnemyAllRangeShot(String node_name, int requiredTotalFrames, Enemy enemy) {
+        super(node_name, requiredTotalFrames);
 
         this.player = player;
         this.enemy = enemy;
         this.bullet = enemy_bullets;
-        this.enable_repeat = true;
+        this.enableRepeat = true;
     };
 
     @Override
     NodeStatus Action() {
         NodeStatus status;
 
-        if (!is_finished) {
+        if (!isFinished) {
             enemy.all_range_shot(bullet);
-            is_finished = true;
+            isFinished = true;
         }
 
         status = super.Action(); 
@@ -160,26 +199,26 @@ class EnemyAllRangeShot extends ActionNode{
 
  
 class EnemyNWayShot extends ActionNode{
-    Enemy enemy;
-    Player player;
+    Enemy enemy; 
+    Player player; // FIXME: it's not good. you must minimal access to fields.
     ArrayList<Bullet> bullet;
    
-    EnemyNWayShot(String node_name, int required_time,
+    EnemyNWayShot(String node_name, int requiredTotalFrames,
                   Enemy enemy, Player player) {
-        super(node_name, required_time);
+        super(node_name, requiredTotalFrames);
         this.player = player;
         this.enemy = enemy;
         this.bullet = enemy_bullets;
-        this.enable_repeat = true;
+        this.enableRepeat = true;
     };
 
     @Override
     NodeStatus Action() {
       NodeStatus status;
 
-      if (!is_finished) {
+      if (!isFinished) {
           enemy.nway_shot(bullet, player);
-          is_finished = true;
+          isFinished = true;
       }
 
       status = super.Action(); 
@@ -189,12 +228,12 @@ class EnemyNWayShot extends ActionNode{
 
 
 class EnemyMeleeAttack extends ActionNode{
-  Enemy enemy;
-  Sword sword;
+    Enemy enemy;
+    Sword sword;
  
-    EnemyMeleeAttack(String node_name, int required_time,
+    EnemyMeleeAttack(String node_name, int requiredTotalFrames,
                      Enemy enemy, Sword sword) {
-        super(node_name, required_time);
+        super(node_name, requiredTotalFrames);
         this.enemy = enemy;
         this.sword = sword;
     }
@@ -233,6 +272,7 @@ class RandomNumberStack {
     }
 }
 
+
 class RandomGenerator extends ActionNode {
     RandomNumberStack stack;
 
@@ -250,7 +290,7 @@ class RandomGenerator extends ActionNode {
     NodeStatus Action() {
         NodeStatus status;
 
-        if (this.required_time != 0) {
+        if (this.requiredTotalFrames != 0) {
             this.generateRandomNumber();
         }
 
@@ -276,7 +316,7 @@ class ReleaseRandomStackTop extends ActionNode{
     NodeStatus Action() {
         NodeStatus status;
 
-        if (this.required_time != 0) {
+        if (this.requiredTotalFrames != 0) {
             this.releaseRandomNumber(); 
         }
         status = super.Action();
