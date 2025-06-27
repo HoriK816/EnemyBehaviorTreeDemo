@@ -13,8 +13,9 @@ Enemy enemy = new Enemy(250, 100);
 PVector player_hp_bar_position = new PVector(10,10);
 PVector enemy_hp_bar_position = new PVector(600,10);
 
-HPBar player_hp_bar = new HPBar(player.hp, player.max_hp, player_hp_bar_position);
-HPBar enemy_hp_bar = new HPBar(enemy.hp, enemy.max_hp, enemy_hp_bar_position);
+// FIXME: don't access to class variables directly!
+HPBar player_hp_bar = new HPBar(player.hp, player.maxHp, player_hp_bar_position);
+HPBar enemy_hp_bar  = new HPBar(enemy.hp, enemy.maxHp, enemy_hp_bar_position);
 
 // melee weapon
 // FIXME: I don't want to definition them. Originally, the player object 
@@ -135,22 +136,22 @@ void keyPressed(){
 
   switch(keyCode){
     case UP:
-      player.move_up = true;
+      player.isMovingUp = true;
       break;
     case DOWN:
-      player.move_down = true;
+      player.isMovingDown = true;
       break;
     case LEFT:
-      player.move_left = true;
+      player.isMovingLeft = true;
       break;
     case RIGHT:
-      player.move_right = true;
+      player.isMovingRight = true;
       break;
     case 'Z': 
       player.shot(player_bullets);
       break;
     case 'X':
-      if(!player_sword.is_active){
+      if(!player_sword.isActive){
         player_sword.activate();
       }
   }
@@ -161,16 +162,16 @@ void keyReleased(){
 
   switch(keyCode){
     case UP:
-      player.move_up = false;
+      player.isMovingUp    = false;
       break;
     case DOWN:
-      player.move_down = false;
+      player.isMovingDown  = false;
       break;
     case LEFT:
-      player.move_left = false;
+      player.isMovingLeft  = false;
       break;
     case RIGHT:
-      player.move_right = false;
+      player.isMovingRight = false;
       break;
   }
 }

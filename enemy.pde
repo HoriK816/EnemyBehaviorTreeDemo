@@ -2,12 +2,12 @@ class Enemy{
     int width         = 20;
     int height        = 25;
     int hp            = 100;
-    int max_hp        = 100; 
-    int attack_power  = 5;            // i don't use it, now
-    int defence_power = 5;            // i don't use it, now
+    int maxHp        = 100; 
+    int attackPower   = 5;                      // i don't use it, now
+    int defencePower  = 5;                      // i don't use it, now
     int max_speed     = 10;
-    color enemy_color = color(255, 255, 0); // purple 
-    PVector position;                 // two dimensions. (x, y).
+    color enemy_color = color(255, 255, 0);     // purple 
+    PVector position;                           // two dimensions. (x, y).
     ControlNode root;
 
     Enemy (float x, float y) {
@@ -191,13 +191,13 @@ class Enemy{
         }
     }
 
-	void all_range_shot(ArrayList<Bullet> bullets) {
-			int ways = 50;
-			for(float d=0; d<2*PI; d+=2*PI/ways) {
-					Bullet bullet = new Bullet(position.x, position.y, 5, d);
-					bullets.add(bullet);
-			}
-	}
+    void all_range_shot(ArrayList<Bullet> bullets) {
+        int ways = 50;
+        for(float d=0; d<2*PI; d+=2*PI/ways) {
+            Bullet bullet = new Bullet(position.x, position.y, 5, d);
+            bullets.add(bullet);
+        }
+    }
 
     void normal_shot(ArrayList<Bullet> bullets) {
         int bullet_speed = 10;
@@ -207,7 +207,7 @@ class Enemy{
         bullets.add(bullet);
     }
 
-    void aim_shot(ArrayList<Bullet> bullets, Player player){
+    void aim_shot(ArrayList<Bullet> bullets, Player player) {
         PVector target = player.position;
         int target_width = player.width;
         int target_height = player.height;
@@ -221,9 +221,9 @@ class Enemy{
         bullets.add(bullet);
     }
 
-	void random_spread_shot(ArrayList<Bullet> bullets){
+	void random_spread_shot(ArrayList<Bullet> bullets) {
 			int number_of_bullets = 5;
-			for(int i =0; i < number_of_bullets; i++){
+			for (int i =0; i < number_of_bullets; i++) {
 
 					float random_direction = random(-(HALF_PI/2), HALF_PI/2);
 
@@ -235,7 +235,7 @@ class Enemy{
 
 	}
 
-	void nway_shot(ArrayList<Bullet> bullets, Player player){
+	void nway_shot(ArrayList<Bullet> bullets, Player player) {
 			float ways = 5;
 			float shot_degree = HALF_PI;
 			PVector target = player.position;
@@ -255,7 +255,7 @@ class Enemy{
 
 			// clockwise direction
 			float degree = pivot; 
-			for(float i=1; i<ways/2; i++){
+			for (float i=1; i<ways/2; i++) {
 					degree -=  shot_degree/ways;
 					bullet = new Bullet(position.x + width/2,
 										position.y + height, 5, degree);
@@ -264,7 +264,7 @@ class Enemy{
 
 			// counterclockwise direction
 			degree = pivot; 
-			for(float i=1; i<ways/2; i++){
+			for (float i=1; i<ways/2; i++) {
 					degree += shot_degree/ways;
 					bullet = new Bullet(position.x + width/2,
 										position.y + height, 5, degree);
@@ -273,25 +273,27 @@ class Enemy{
 	}
 
 
-    void melleAttack(Sword sword){
-        if(!sword.is_active){
+    void melleAttack(Sword sword) {
+        if (!sword.isActive) {
             sword.activate();
         }
     }
 
-    void checkMeleeHit(Sword sword){
-        PVector sword_start_point = sword.start_point;
-        PVector sword_end_point   = sword.end_point;
+    void checkMeleeHit(Sword sword) {
+        PVector sword_start_point = sword.startPoint;
+        PVector sword_end_point   = sword.endPoint;
         boolean is_top_crossed    = false;
         boolean is_bottom_crossed = false;
         boolean is_left_crossed   = false;
         boolean is_right_crossed  = false;
 
-       // check if two lines cross over about four lines.
-       // top line
-        PVector top_line_start = new PVector(position.x, position.y); 
-        PVector top_line_end   = new PVector(position.x + width, position.y); 
-
+        /* check if two lines cross over about four lines. */
+       
+        // top line
+        PVector top_line_start = new PVector(position.x,
+                                             position.y); 
+        PVector top_line_end   = new PVector(position.x + width,
+                                             position.y); 
         is_top_crossed = isCrossOverTwoLines(sword_start_point,
                                              sword_end_point,
                                              top_line_start,
@@ -302,7 +304,6 @@ class Enemy{
                                                 position.y + height);
         PVector bottom_line_end   = new PVector(position.x + width,
                                                 position.y + height);
-     
         is_bottom_crossed = isCrossOverTwoLines(sword_start_point,
                                                 sword_end_point,
                                                 bottom_line_start,
@@ -312,7 +313,6 @@ class Enemy{
                                               position.y); 
         PVector left_line_end   = new PVector(position.x,
                                               position.y + height); 
-
         is_left_crossed = isCrossOverTwoLines(sword_start_point,
                                               sword_end_point,
                                               left_line_start,
@@ -323,7 +323,6 @@ class Enemy{
                                                position.y); 
         PVector right_line_end   = new PVector(position.x + width,
                                                position.y + height); 
-
         is_right_crossed = isCrossOverTwoLines(sword_start_point,
                                                sword_end_point,
                                                right_line_start,
@@ -331,7 +330,7 @@ class Enemy{
 
         if(is_top_crossed || is_bottom_crossed 
                 || is_left_crossed || is_right_crossed){
-            if(sword.is_active){
+            if(sword.isActive){
                 takeDamage();
             }
         }
@@ -340,7 +339,7 @@ class Enemy{
     // NOTE: you must set sword as a line 1
     boolean isCrossOverTwoLines(PVector line1_start, PVector line1_end,
                               PVector line2_start, PVector line2_end){
-        float y,x 
+        float y,x; 
         float a,b; // y = ax + b
         float c,d; // y = cx + d 
 
@@ -393,17 +392,17 @@ class Enemy{
 
         x=0;
         y=0;
-        if( a != c ){
+        if (a != c) {
             x = (d - b) / (a - c);
             y = (a * d - b * c) / (a - c);
-        }else if(b == d){
+        } else if (b == d) {
             return true;
-        }else{
+        } else {
             return false;
         }
 
 
-        if(line1_start.x <= line1_end.x && line1_start.y <= line1_end.y){
+        if (line1_start.x <= line1_end.x && line1_start.y <= line1_end.y) {
 
             // sword is in first quadrant
             if ((line1_start.x <= x) && (x <= line1_end.x)

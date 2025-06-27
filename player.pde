@@ -92,8 +92,8 @@ class Player{
     }
 
     void checkMeleeHit(Sword sword){
-        PVector sword_start_point = sword.start_point;
-        PVector sword_end_point   = sword.end_point;
+        PVector sword_start_point = sword.startPoint;
+        PVector sword_end_point   = sword.endPoint;
         
         boolean is_top_crossed    = false;
         boolean is_bottom_crossed = false;
@@ -144,7 +144,7 @@ class Player{
 
         if(is_top_crossed || is_bottom_crossed
                || is_left_crossed || is_right_crossed){
-            if(sword.is_active){
+            if(sword.isActive){
                 takeDamage();
             }
         }
