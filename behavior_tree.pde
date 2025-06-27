@@ -8,8 +8,8 @@ class BehaviorTreeNode{
     String name;
     NodeStatus status;
 
-    BehaviorTreeNode(String node_name) {
-        this.name = node_name;
+    BehaviorTreeNode(String nodeName) {
+        this.name = nodeName;
     }
 
     /* must override this method */
@@ -27,8 +27,8 @@ class BehaviorTreeNode{
 class ControlNode extends BehaviorTreeNode{
     ArrayList<BehaviorTreeNode> children;
 
-    ControlNode(String node_name) {
-        super(node_name);
+    ControlNode(String nodeName) {
+        super(nodeName);
         this.children = new ArrayList<BehaviorTreeNode>();
     }
 
@@ -50,8 +50,8 @@ class SequenceNode extends ControlNode {
     int numberChildren         = 0;
     int numberExecutedChildren = 0;
 
-    SequenceNode(String node_name) {
-        super(node_name);
+    SequenceNode(String nodeName) {
+        super(nodeName);
     }
 
     NodeStatus executeAllChildren() {
@@ -98,8 +98,8 @@ class SelectorNode extends ControlNode {
     int number_children = 0;
     int number_executed = 0;
 
-    SelectorNode (String node_name) {
-        super(node_name);
+    SelectorNode (String nodeName) {
+        super(nodeName);
     }
 
     NodeStatus executeChildren() {
@@ -148,8 +148,8 @@ class SelectorNode extends ControlNode {
 class DecoratorNode extends BehaviorTreeNode {
     BehaviorTreeNode child;
 
-    DecoratorNode(String node_name) {
-        super(node_name);
+    DecoratorNode(String nodeName) {
+        super(nodeName);
     }
 
     void setChild(BehaviorTreeNode new_node) {
@@ -161,8 +161,8 @@ class DecoratorNode extends BehaviorTreeNode {
 /* InverterNode is a node to invert the result of child node and return it */
 class InverterNode extends DecoratorNode {
 
-    InverterNode(String node_name) {
-        super(node_name);
+    InverterNode(String nodeName) {
+        super(nodeName);
     }
 
     @Override
@@ -224,13 +224,13 @@ class RepeaterNode extends DecoratorNode {
 class RetryUntilSuccessfulNode extends DecoratorNode {
     int number_attempt;
 
-    RetryUntilSuccessfulNode(String node_name, int number_attempt) {
-        super(node_name);
+    RetryUntilSuccessfulNode(String nodeName, int number_attempt) {
+        super(nodeName);
         this.number_attempt =  number_attempt; 
     }
 
     @Override 
-    NodeStatus evalNode(){
+    NodeStatus evalNode() {
         NodeStatus result;
 
         result = child.evalNode();
@@ -257,8 +257,8 @@ class RetryUntilSuccessfulNode extends DecoratorNode {
 
 class KeepRunningUntilFailureNode extends DecoratorNode{
 
-    KeepRunningUntilFailureNode(String node_name) {
-        super(node_name);
+    KeepRunningUntilFailureNode(String nodeName) {
+        super(nodeName);
     }
 
     @Override
@@ -285,8 +285,8 @@ class KeepRunningUntilFailureNode extends DecoratorNode{
 class LeafNode extends BehaviorTreeNode{ 
     NodeStatus status;
 
-    LeafNode(String node_name){
-        super(node_name);
+    LeafNode(String nodeName){
+        super(nodeName);
     }
 }
 
@@ -295,8 +295,8 @@ class ConditionNode extends LeafNode{
     boolean is_met = false;
     NodeStatus status;
 
-    ConditionNode(String node_name){
-        super(node_name);
+    ConditionNode(String nodeName){
+        super(nodeName);
     }
 
     /*
@@ -319,25 +319,29 @@ class ConditionNode extends LeafNode{
 }
 
 class ActionNode extends LeafNode{
-    int required_time     = 0;
-    int remained_time     = 0;
-    boolean is_finished   = false;
-    boolean enable_repeat = false;
+    boolean isFinished      = false;
+    boolean enableRepeat    = false;  // by default, repeating is disabled. 
+    int requiredTotalFrames = 0;
+    int remainedFrames      = 0;      // it's decremented every Action() calls
 
-    ActionNode(String node_name, int required_time){
-        super(node_name);
-        this.required_time = required_time;
-        this.remained_time = required_time;
+    ActionNode(String nodeName, int requiredTotalFrames){
+        super(nodeName);
+        this.requiredTotalFrames = requiredTotalFrames;
+        this.remainedFrames      = requiredTotalFrames;
     }
 
     NodeStatus Action(){
-        if(0 < remained_time){
-            remained_time--;
+        if(0 < remainedFrames){
+            remainedFrames--;
             return NodeStatus.RUNNING;
+
+        /* execute process to finite the action if remaindFrames reaches 0 */
         }else{
-            if(enable_repeat){
-                is_finished = false;
-                remained_time = required_time;
+
+            /* reset */
+            if(enableRepeat){
+                isFinished = false;
+                remainedFrames = requiredTotalFrames;
             }
             return NodeStatus.SUCCESS;
         }
