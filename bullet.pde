@@ -42,7 +42,7 @@ class Bullet {
 }
 
 
-void move_bullets() {
+void moveBullets() {
     for (int i=0; i<player_bullets.size(); i++) {
         player_bullets.get(i).move();
     }
@@ -52,7 +52,7 @@ void move_bullets() {
     }
 }
 
-void draw_bullets() {
+void drawBullets() {
     for (int i=0; i<player_bullets.size(); i++) {
         player_bullets.get(i).draw();
     }
@@ -62,7 +62,7 @@ void draw_bullets() {
     }
 }
 
-void remove_frameout_bullets() {
+void removeFrameoutBullets() {
     for (int i = player_bullets.size()-1; i>=0; i--) {
         if (player_bullets.get(i).isOutOfWindow()) {
             player_bullets.remove(i);
@@ -76,7 +76,7 @@ void remove_frameout_bullets() {
     }
 }
 
-void remove_hit_bullets() {
+void removeHitBullets() {
     for (int i = player_bullets.size()-1; i>=0; i--) {
         if (player_bullets.get(i).is_hit) {
             player_bullets.remove(i);
