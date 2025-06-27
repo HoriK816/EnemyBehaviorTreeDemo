@@ -1,75 +1,62 @@
 class Sword{
+    public PVector startPoint = new PVector(0,0);   // two dimensions. (x, y)
+    public PVector endPoint   = new PVector(0, 0);  // two dimensions. (x, y)
+    public boolean isActive   = false;
+    float rotationAngle       = 0;     // object rotation
+    float redius              = 100;   // it's a length of the sword, actually. 
+    float angularVelocity     = 0.2;   // the moving speed of the sword. 
+    color sword_color         = color(255, 255, 255); // white
+                                                      
+    Sword(){}
 
-  public PVector start_point; // two dimensions. (x, y)
-  public PVector end_point;   // two dimensions. (x, y)
+    void rotate_sword(PVector centerPoint){
+        float distanceX = redius * cos(rotationAngle);
+        float distanceY = redius * sin(rotationAngle);
+
+        // update endPoint besides the object has this sword.
+        this.endPoint.x = centerPoint.x + distanceX;
+        this.endPoint.y = centerPoint.y + distanceY;
+    }
   
-  // object rotation
-  float rotation_angle;
-  float redius; 
-  float angular_velocity;
+    void move(PVector charaPosition, int charaWidth, int charaHeight){
+        startPoint.x = charaPosition.x + charaWidth/2; 
+        startPoint.y = charaPosition.y + charaHeight/2;
 
-  color sword_color;
+        if(isActive) {
+            rotate_sword(startPoint);
+            rotationAngle += angularVelocity;
 
-  boolean is_active;
-
-
-  Sword(){
-    // these are tentative values
-    redius = 100;
-
-    start_point = new PVector(0,0);
-    end_point = new PVector(0, 0);
-
-    sword_color = color(255, 255, 255); // white
-    // it's a test value. is_active must be false at the start.
-    is_active = false;
-
-    angular_velocity = 0.2;
-
-  }
-
-  void rotate_sword(PVector center_point){
-    float distance_x = redius * cos(rotation_angle);
-    float distance_y = redius * sin(rotation_angle);
-
-    // update end_point besides the object has this sword.
-    this.end_point.x = center_point.x + distance_x;
-    this.end_point.y = center_point.y + distance_y;
-  }
-  
-  void move(PVector character_position, int character_width, int character_height){
-    start_point.x = character_position.x + character_width/2; 
-    start_point.y = character_position.y + character_height/2;
-
-    if(is_active){
-        rotate_sword(start_point);
-        rotation_angle += angular_velocity;
-
-        if(2*3.14 < rotation_angle){
-            inactivate();
+            if (2*3.14 < rotationAngle) {
+                inactivate();
+            }
         }
     }
 
-  }
+    void draw(){
+        if(isActive){
+            color colorToReset = color(0,0,0); // black
+                                              
+            /* draw the sword */
+            stroke(sword_color);
+            line(startPoint.x, startPoint.y, endPoint.x, endPoint.y); 
 
-  void draw(){
-    if(is_active){
-        stroke(sword_color);
-        line(start_point.x, start_point.y, end_point.x, end_point.y); 
-        
-        color reset_color = color(0,0,0); // black
-        stroke(reset_color);
+            /*
+             * In Processing, the effect of stroke is remaining. Therefore, 
+             * other object also be drawn with the sword color, if you don't 
+             * reset it.
+             * */
+            stroke(colorToReset);
+        }
     }
-  }
 
-  void activate(){
-    // reset angle
-    rotation_angle = 0;
+    void activate(){
+        this.isActive = true;
 
-    this.is_active = true;
-  }
+        // reset angle
+        rotationAngle = 0;
+    }
 
-  void inactivate(){
-    this.is_active = false;
-  }
+    void inactivate(){
+        this.isActive = false;
+    }
 }
