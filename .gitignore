@@ -12,5 +12,7 @@ out
 # processing 
 .*.pde.swp
 sketch.properties
+*.autosave
+
 # vim 
 *.swp
