@@ -5,7 +5,7 @@ class Enemy{
     int maxHp        = 100; 
     int attackPower   = 5;                      // i don't use it, now
     int defencePower  = 5;                      // i don't use it, now
-    int max_speed     = 10;
+    int maxSpeed     = 10;
     color enemy_color = color(255, 255, 0);     // purple 
     PVector position;                           // two dimensions. (x, y).
     ControlNode root;
@@ -36,7 +36,7 @@ class Enemy{
         IsShortRange     d = new IsShortRange(300, player, enemy);
         SequenceNode     e = new SequenceNode("e");
         CloseToPlayer    f = new CloseToPlayer("close to player", 30, enemy, player);
-        EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemy_sword);
+        EnemyMeleeAttack g = new EnemyMeleeAttack("melee", 10, enemy, enemySword);
         c.setChild(d);
         e.addChild(f);
         e.addChild(g);
