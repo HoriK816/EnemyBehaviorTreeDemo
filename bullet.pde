@@ -2,7 +2,7 @@ ArrayList<Bullet> enemy_bullets = new ArrayList<Bullet>();
 ArrayList<Bullet> player_bullets = new ArrayList<Bullet>();
 
 class Bullet {
-    int width = 5;
+    int width  = 5;
     int height = 5;
     boolean is_hit = false;
     color bullet_color = color(255, 255, 255); // white
