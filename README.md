@@ -1,3 +1,4 @@
+![demo](/imgs/screenshots/demo_scene.gif)
 # Abstract
 This is a repository to demonstrate the enemy's character AI in the 2D shooting 
 game. My enemy character AI is implemented using BT (Behavior Tree), which is 
