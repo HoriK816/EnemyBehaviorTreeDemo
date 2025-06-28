@@ -1,98 +1,100 @@
 # Abstract
- This is a repository to demonstrate the enemy's character AI at the 2D shooting game. My 
-enemy character AI is implemented by BT(Behavior Tree) which is often used to 
-create behaviors of robotics or NPC (Non-Playable Character)  in game developing context.
- And then, not only the character AI, I implements entire this demo with Processing. 
-Processing is a programming environment for visual programming. And, you can very 
-easy to test it with Processing.
+This is a repository to demonstrate the enemy's character AI in the 2D shooting 
+game. My enemy character AI is implemented using BT (Behavior Tree), which is 
+often used to create behaviors for robotics or NPCs (Non-Playable Characters) 
+in game development contexts. 
+
+And then, not only the character AI, I implement the entire Demo with Processing. 
+Processing is a programming environment for visual programming. And, you can 
+test it easily with Processing.
 
 # How to use 
 ![how to use](/imgs/screenshots/how_to_use.png)
-1. Open any program file with Processing. (You can open all program, if you 
-open any file with double-click)
-2. Run the demo program by Start button. Start button is in upper right of the 
-window.
-3. New window is be opened and Demo starts.
+1. Open any program file with Processing by double-clicking it. 
+(Opening one file will open all programs.)
+2. Run the demo program with the Start button. The start button is in 
+the upper right of the window.
+3. A new window will open, and the Demo will start. 
 
 I confirmed this program works correctly in version 4.3.4 of processing.
 
 # About BT (Behavior Tree)
- Behavior Tree, it's often abbreviated to BT, is a algorithm to create 
-behaviors of NPC (Non-Playable Character). BT is often used even in commercial
-games, and Final Fantasy(FF) series is one of the most famous examples ( 
-Strictly speaking, it's not only BT that the character AI algorithm used in
-FF series is...) 
- In this BT, character's behavior is presented by Tree structure. We build the 
-the tree with BT nodes, then There are mainly three types of nodes.
+Behavior Tree, often abbreviated to BT, is an algorithm to create behaviors of 
+NPC (Non-Playable Character). BT is often used even in commercial games, and 
+the FF (Final Fantasy) series is one of the most famous examples (Strictly 
+speaking, the character AI algorithm used in the FF series is not limited to 
+BT...). In this BT, the character's behavior is presented by a tree structure. 
+We use BT nodes to build the tree, and there are mainly three types of nodes. 
 
 They are
- * Control Nodes
- * Leaf Nodes
- * Decorator Nodes
+* Control Nodes
+* Leaf Nodes
+* Decorator Nodes
 
- Control Nodes are nodes that control the process flow. For example, Sequence 
-Node, a type of control nodes, execute all child nodes sequentially.
+Control Nodes are nodes that control the process flow. For example, Sequence 
+Node, a type of control node, executes all child nodes sequentially.
 
- Leaf Nodes are nodes that corresponded to actual character's behavior. All 
-Characters do ACTION and MAKE A DECISIONS in the game world. Leaf Nodes 
+Leaf Nodes are nodes that correspond to the actual character's behavior. 
+All Characters do ACTION and MAKE DECISIONS in the game world. Leaf Nodes 
 correspond to them.
 
- Decorator Nodes are node to alter operation of the specific nodes. For example,
-Repeater Nodes execute the child node repeatedly, and Inverter Nodes invert 
-results of the child node.
+Decorator Nodes are nodes that alter operations at the specific nodes. 
+For example, Repeater Nodes execute the child node repeatedly, and 
+Inverter Nodes invert the results of the child node.
 
- Furthermore, All BT nodes returns the threes types of result. 
+Furthermore, all BT nodes return the three types of results.
+They are
+* SUCCESS
+* FAILURE
+* RUNNING
 
- They are
- * SUCCESS 
- * FAILURE
- * RUNNING
+SUCCESS represents that the node finishes its work correctly. FAILURE is the 
+opposite, and vice versa. RUNNING represents that the node is still in an 
+executing state. Normally, the Character's Action (walking, attacking, chanting 
+a spell, and so on...) takes time, therefore the corresponding node continues 
+to return to RUNNING during that time.
 
- SUCCESS represents that the node finish their work correctly. FAILURE is opposite
-,vice verse. RUNNING represents that the node still executing status. Normally,
-Character's Action (walk, attack, chanting a spell and so on...) takes time, therefore
-the corresponding node continue to return RUNNING during the time.
+It's possible to decide the next action of the character by tracing the tree 
+regularly. By the way, my demo program traces the tree every draw call (this 
+function in processing a kind of update in other programming platforms).
 
- It's possible to decide next action of the character by tracing the tree 
-regularly. By the way, My demo program trace the tree every draw calls(this function in 
-processing a kind of update in other programming platform).
 
 # Structure of My Enemy AI 
 ![object tree for BT](/imgs/figures/object_tree_bt.png)
-This image represents Object Tree for BT in this project. Although I don't implements 
-all types of node in BT, it seems to sufficient to create various enemy action
-patterns in 2D shooting games.
+This image represents the Object Tree for BT in this project. Although I don't 
+implement all types of nodes in BT, it seems to be sufficient to create various 
+enemy action patterns in 2D shooting games.
 
-As mentioned previously, ActionNode and ConditionNode are correspond to actual 
-enemy's actions and making decisions. Then, We have to inherit them to create 
-each action and making decisions.
+As mentioned previously, ActionNode and ConditionNode correspond to the actual 
+enemy's actions and decisions. Then, we have to inherit them to create each 
+action and make decisions.
 
 There are SequenceNode and SelectorNode as ControlNode.
 
-In addition, I implemented InverterNode, RepeaterNode, KeepRunningUntilFailureNode
-and RetryUntilSuccessfulNode as DecoratorNode.
-
-I built enemy's behavior tree with these tree components.
+In addition, I implemented InverterNode, RepeaterNode, 
+KeepRunningUntilFailureNode, and RetryUntilSuccessfulNode as DecoratorNode.
 
 ![my enemy AI](/imgs/figures/my_enemy_ai_structure.png)
-This is the structure of my enemy character AI. It has a lot of nodes, but it's
-not very complicated.
+built an enemy's behavior tree with these three components.
+This is the structure of my enemy character AI. It has a lot of nodes, but 
+it's not very complicated.
 
-Roughly speaking, The Enemy's behavior is like this. 
-* The distance to player is less than L -> close to player and make an melee attack
-* The distance to player is greater than or equal L -> random move or make an ranged attack 
-    * There are three types of ranged shot 
-        * Normal shot
-        * Bullet Hell 1 (All range shot + N-way)
-        * Bullet Hell 2 (rapid firing)
+Roughly speaking, the enemy's behavior is like this.
+* The distance to the player is less than L -> close to the player and make a melee attack
+* The distance to the player is greater than or equal to L -> random move or make a ranged attack
+	* There are three types of ranged shot
+		* Normal shot
+		* Bullet Hell 1 (All range shot + N-way)
+		* Bullet Hell 2 (rapid firing)
 
 ![my enemy AI](/imgs/figures/my_enemy_ai_structure_with_indicator.png)
-By the way, you might become unable to recognize what you are create.
-It's difficult to build complicated behaviors because my program doesn't provide
+By the way, you might find it hard to recognize what you are creating. It's 
+difficult to build complicated behaviors because my program doesn't provide 
 DSL(Domain Specific Language) to build a tree. As a countermeasure for it, 
-It works the way that give an indicator each node such as alphabet for me.
+It works the way that gives an indicator for each node such as the alphabet for 
+me.
 
 # Reference
-I refered the web site below about Behavior Tree.
+I used the website below as a reference.
 
 [behaviortree.dev](https://www.behaviortree.dev/docs/Intro)
