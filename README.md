@@ -7,17 +7,14 @@ Processing is a programming environment for visual programming. And, you can ver
 easy to test it with Processing.
 
 # How to use 
+![how to use](/imgs/screenshots/how_to_use.png)
 1. Open any program file with Processing. (You can open all program, if you 
 open any file with double-click)
 2. Run the demo program by Start button. Start button is in upper right of the 
 window.
 3. New window is be opened and Demo starts.
 
-I confirmed this program works correlty in the latest version of prcessing (
-version : -- ). 
-
-# Structure of My Enemy AI 
-The Structure of My Enemy Character AI is not very complicated.
+I confirmed this program works correctly in version 4.3.4 of processing.
 
 # About BT (Behavior Tree)
  Behavior Tree, it's often abbreviated to BT, is a algorithm to create 
@@ -55,6 +52,14 @@ the corresponding node continue to return RUNNING during the time.
  It's possible to decide next action of the character by tracing the tree 
 regularly. By the way, My demo program trace the tree every draw calls(this function in 
 processing a kind of update in other programming platform).
+
+# Structure of My Enemy AI 
+![object tree for BT](/imgs/figures/object_tree_bt.png)
+
+![my enemy AI](/imgs/figures/my_enemy_ai_structure.png)
+The Structure of My Enemy Character AI is not very complicated.
+
+![my enemy AI](/imgs/figures/my_enemy_ai_structure_with_indicator.png)
 
 # Reference
 I refered the web site below about Behavior Tree.
