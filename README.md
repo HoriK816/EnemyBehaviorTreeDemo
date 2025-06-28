@@ -1,4 +1,4 @@
-<img src="https://github.com/HoriK816/EnemyBehaviorTreeDemo/tree/main/imgs/screenshots" width="150%">
+<img src="/imgs/screenshots" width="150%">
 
 # Abstract
 This is a repository to demonstrate the enemy's character AI in the 2D shooting 
