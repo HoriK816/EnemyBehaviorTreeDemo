@@ -1,7 +1,4 @@
-{: align="center"}
-<img src="https://github.com/HoriK816/EnemyBehaviorTreeDemo/blob/write_readme/imgs/screenshots/game_scene.gif" width="200%" >
-
-![demo](https://github.com/HoriK816/EnemyBehaviorTreeDemo/blob/write_readme/imgs/screenshots/game_scene.gif)
+<img src="https://github.com/HoriK816/EnemyBehaviorTreeDemo/blob/write_readme/imgs/screenshots/game_scene.gif" width="180%">
 
 # Abstrac
 This is a repository to demonstrate the enemy's character AI in the 2D shooting 
