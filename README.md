@@ -1,6 +1,6 @@
-<img src="https://github.com/HoriK816/EnemyBehaviorTreeDemo/blob/write_readme/imgs/screenshots/game_scene.gif" width="180%">
+<img src="https://github.com/HoriK816/EnemyBehaviorTreeDemo/blob/write_readme/imgs/screenshots/game_scene.gif" width="150%">
 
-# Abstrac
+# Abstract
 This is a repository to demonstrate the enemy's character AI in the 2D shooting 
 game. My enemy character AI is implemented using BT (Behavior Tree), which is 
 often used to create behaviors for robotics or NPCs (Non-Playable Characters) 
