@@ -1,3 +1,6 @@
+{: align="center"}
+<img src="https://github.com/HoriK816/EnemyBehaviorTreeDemo/blob/write_readme/imgs/screenshots/game_scene.gif" width="200%" >
+
 ![demo](https://github.com/HoriK816/EnemyBehaviorTreeDemo/blob/write_readme/imgs/screenshots/game_scene.gif)
 
 # Abstrac
