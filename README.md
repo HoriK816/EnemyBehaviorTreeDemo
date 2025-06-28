@@ -20,6 +20,14 @@ the upper right of the window.
 
 I confirmed this program works correctly in version 4.3.4 of processing.
 
+# How to Control
+* UP Arrow Key    : move up
+* Down Arrow Key  : move down
+* Right Array Key : move right
+* Left Array Key  : move left
+* Z key           : ranged attack 
+* X key           : melee attack
+
 # About BT (Behavior Tree)
 Behavior Tree, often abbreviated to BT, is an algorithm to create behaviors of 
 NPC (Non-Playable Character). BT is often used even in commercial games, and 
@@ -45,13 +53,14 @@ For example, Repeater Nodes execute the child node repeatedly, and
 Inverter Nodes invert the results of the child node.
 
 Furthermore, all BT nodes return the three types of results.
+
 They are
 * SUCCESS
 * FAILURE
 * RUNNING
 
-SUCCESS represents that the node finishes its work correctly. FAILURE is the 
-opposite, and vice versa. RUNNING represents that the node is still in an 
+SUCCESS represents that the node finishes its work correctly. FAILURE is vice 
+versa. RUNNING represents that the node is still in an 
 executing state. Normally, the Character's Action (walking, attacking, chanting 
 a spell, and so on...) takes time, therefore the corresponding node continues 
 to return to RUNNING during that time.
