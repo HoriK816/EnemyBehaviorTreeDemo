@@ -1,7 +1,7 @@
 # Abstract
  This is a repository to demonstrate the enemy's character AI at the 2D shooting game. My 
 enemy character AI is implemented by BT(Behavior Tree) which is often used to 
-create behaviors of NPC (Non-Playable Character) even in commercial games.
+create behaviors of robotics or NPC (Non-Playable Character)  in game developing context.
  And then, not only the character AI, I implements entire this demo with Processing. 
 Processing is a programming environment for visual programming. And, you can very 
 easy to test it with Processing.
@@ -57,4 +57,6 @@ regularly. By the way, My demo program trace the tree every draw calls(this func
 processing a kind of update in other programming platform).
 
 # Reference
+I refered the web site below about Behavior Tree.
 
+[behaviortree.dev](https://www.behaviortree.dev/docs/Intro)
