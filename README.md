@@ -32,12 +32,15 @@ They are
 
  Control Nodes are nodes that control the process flow. For example, Sequence 
 Node, a type of control nodes, execute all child nodes sequentially.
+
  Leaf Nodes are nodes that corresponded to actual character's behavior. All 
 Characters do ACTION and MAKE A DECISIONS in the game world. Leaf Nodes 
 correspond to them.
+
  Decorator Nodes are node to alter operation of the specific nodes. For example,
 Repeater Nodes execute the child node repeatedly, and Inverter Nodes invert 
 results of the child node.
+
  Furthermore, All BT nodes returns the threes types of result. 
 
  They are
@@ -49,17 +52,45 @@ results of the child node.
 ,vice verse. RUNNING represents that the node still executing status. Normally,
 Character's Action (walk, attack, chanting a spell and so on...) takes time, therefore
 the corresponding node continue to return RUNNING during the time.
+
  It's possible to decide next action of the character by tracing the tree 
 regularly. By the way, My demo program trace the tree every draw calls(this function in 
 processing a kind of update in other programming platform).
 
 # Structure of My Enemy AI 
 ![object tree for BT](/imgs/figures/object_tree_bt.png)
+This image represents Object Tree for BT in this project. Although I don't implements 
+all types of node in BT, it seems to sufficient to create various enemy action
+patterns in 2D shooting games.
+
+As mentioned previously, ActionNode and ConditionNode are correspond to actual 
+enemy's actions and making decisions. Then, We have to inherit them to create 
+each action and making decisions.
+
+There are SequenceNode and SelectorNode as ControlNode.
+
+In addition, I implemented InverterNode, RepeaterNode, KeepRunningUntilFailureNode
+and RetryUntilSuccessfulNode as DecoratorNode.
+
+I built enemy's behavior tree with these tree components.
 
 ![my enemy AI](/imgs/figures/my_enemy_ai_structure.png)
-The Structure of My Enemy Character AI is not very complicated.
+This is the structure of my enemy character AI. It has a lot of nodes, but it's
+not very complicated.
+
+Roughly speaking, The Enemy's behavior is like this. 
+* The distance to player is less than L -> close to player and make an melee attack
+* The distance to player is greater than or equal L -> random move or make an ranged attack 
+    * There are three types of ranged shot 
+        * Normal shot
+        * Bullet Hell 1 (All range shot + N-way)
+        * Bullet Hell 2 (rapid firing)
 
 ![my enemy AI](/imgs/figures/my_enemy_ai_structure_with_indicator.png)
+By the way, you might become unable to recognize what you are create.
+It's difficult to build complicated behaviors because my program doesn't provide
+DSL(Domain Specific Language) to build a tree. As a countermeasure for it, 
+It works the way that give an indicator each node such as alphabet for me.
 
 # Reference
 I refered the web site below about Behavior Tree.
