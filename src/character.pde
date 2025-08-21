@@ -48,118 +48,121 @@ class Character {
         }
     }
 
-    public void checkMeleeHit(Sword sword){
-        PVector sword_start_point = sword.startPoint;
-        PVector sword_end_point   = sword.endPoint;
+    public void checkMeleeHit (Sword sword) {
+        PVector swordStartPoint = sword.startPoint;
+        PVector swordEndPoint   = sword.endPoint;
         
-        boolean is_top_crossed    = false;
-        boolean is_bottom_crossed = false;
-        boolean is_left_crossed   = false;
-        boolean is_right_crossed  = false;
+        boolean isTopCrossed    = false;
+        boolean isBottomCrossed = false;
+        boolean isLeftCrossed   = false;
+        boolean isRightCrossed  = false;
 
-        /* check if two lines cross over about four lines. */
+        /* 
+         * check if two lines cross over about four lines.
+         */
 
-        // top line
-        PVector top_line_start = new PVector(position.x,
+        /* Top line  */
+        PVector topLineStart = new PVector(position.x,
+                                           position.y); 
+        PVector topLineEnd   = new PVector(position.x + width,  
+                                           position.y); 
+        isTopCrossed = isCrossOverTwoLines(swordStartPoint,
+                                           swordEndPoint,
+                                           topLineStart,
+                                           topLineEnd);
+
+        /* Bottom line  */
+        PVector bottomLineStart = new PVector(position.x,
+                                              position.y + height);
+        PVector bottomLineEnd   = new PVector(position.x + width,
+                                              position.y + height);
+        isBottomCrossed = isCrossOverTwoLines(swordStartPoint,
+                                              swordEndPoint,
+                                              bottomLineStart,
+                                              bottomLineEnd);
+
+        /* Left line  */ 
+        PVector leftLineStart = new PVector(position.x,
+                                            position.y); 
+        PVector leftLineEnd   = new PVector(position.x,
+                                            position.y + height); 
+        isLeftCrossed = isCrossOverTwoLines(swordStartPoint,
+                                            swordEndPoint,
+                                            leftLineStart,
+                                            leftLineEnd);
+
+        /* Right line  */ 
+        PVector rightLineStart = new PVector(position.x + width,
                                              position.y); 
-        PVector top_line_end   = new PVector(position.x + width,  
-                                             position.y); 
-        is_top_crossed = isCrossOverTwoLines(sword_start_point,
-                                             sword_end_point,
-                                             top_line_start,
-                                             top_line_end);
+        PVector rightLineEnd   = new PVector(position.x + width,
+                                             position.y + height); 
+        isRightCrossed = isCrossOverTwoLines(swordStartPoint,
+                                             swordEndPoint,
+                                             rightLineStart,
+                                             rightLineEnd);
 
-         // bottom line
-        PVector bottom_line_start = new PVector(position.x,
-                                                position.y + height);
-        PVector bottom_line_end   = new PVector(position.x + width,
-                                                position.y + height);
-        is_bottom_crossed = isCrossOverTwoLines(sword_start_point,
-                                                sword_end_point,
-                                                bottom_line_start,
-                                                bottom_line_end);
-
-         // left line
-        PVector left_line_start = new PVector(position.x,
-                                              position.y); 
-        PVector left_line_end   = new PVector(position.x,
-                                              position.y + height); 
-        is_left_crossed = isCrossOverTwoLines(sword_start_point,
-                                              sword_end_point,
-                                              left_line_start,
-                                              left_line_end);
-
-         // right line
-        PVector right_line_start = new PVector(position.x + width,
-                                               position.y); 
-        PVector right_line_end   = new PVector(position.x + width,
-                                               position.y + height); 
-        is_right_crossed = isCrossOverTwoLines(sword_start_point,
-                                               sword_end_point,
-                                               right_line_start,
-                                               right_line_end);
-
-        if(is_top_crossed || is_bottom_crossed
-               || is_left_crossed || is_right_crossed){
-            if(sword.isActive){
+        if (isTopCrossed || isBottomCrossed
+                || isLeftCrossed || isRightCrossed) {
+            if (sword.isActive) {
                 takeDamage();
             }
         }
     }
 
-    // NOTE: you must set sword as a line 1
-    boolean isCrossOverTwoLines(PVector line1_start, PVector line1_end,
-                              PVector line2_start, PVector line2_end){
+    boolean isCrossOverTwoLines(PVector swordStartPoint, PVector swordEndPoint,
+                                PVector line_start, PVector line_end){
         float y,x; 
         float a,b; // y = ax + b
         float c,d; // y = cx + d 
 
 
-        if ((line1_start.x == line1_end.x) && (line2_start.x == line2_end.x)) {
-            if (line1_start.x == line2_start.x) {
+        if ((swordStartPoint.x == swordEndPoint.x)
+                && (line_start.x == line_end.x)) {
+            if (swordStartPoint.x == line_start.x) {
                 return true;
             }
             return false; 
         }
 
-        if (line2_start.x == line2_end.x) {
-            a = (line1_start.y - line1_end.y) / (line1_start.x - line1_end.x);
-            b = line1_start.y - a * line1_start.x;
+        if (line_start.x == line_end.x) {
+            a = (swordStartPoint.y - swordEndPoint.y) 
+                  / (swordStartPoint.x - swordEndPoint.x);
+            b = swordStartPoint.y - a * swordStartPoint.x;
 
-            x = line2_start.x;
+            x = line_start.x;
             y = a * x + b;
 
-            if((line1_start.x <= x) && (x <= line1_end.x) 
-                && (line2_start.x <= x) && (x <= line2_end.x)
-                && (line1_start.y <= y) && ( y <= line1_end.y)
-                && (line2_start.y <= y) && (y<= line2_end.y)){
+            if((swordStartPoint.x <= x) && (x <= swordEndPoint.x) 
+                   && (line_start.x <= x) && (x <= line_end.x)
+                   && (swordStartPoint.y <= y) && ( y <= swordEndPoint.y)
+                   && (line_start.y <= y) && (y<= line_end.y)){
                 return true;
             }else{
                 return false;
             }
         }
 
-        if (line1_start.x == line1_end.x) {
-            c = (line2_start.y - line2_end.y) / (line2_start.x - line2_end.x);
-            d = line2_start.y - c * line2_start.x;
+        if (swordStartPoint.x == swordEndPoint.x) {
+            c = (line_start.y - line_end.y) / (line_start.x - line_end.x);
+            d = line_start.y - c * line_start.x;
 
-            x = line1_start.x;
+            x = swordStartPoint.x;
             y = c * x + d;
 
-            if((line1_start.x <= x) && (x <= line1_end.x)
-                && (line2_start.x <= x) && (x <= line2_end.x)
-                && (line1_start.y <= y) && ( y <= line1_end.y)
-                && (line2_start.y <= y) && (y<= line2_end.y)){
+            if((swordStartPoint.x <= x) && (x <= swordEndPoint.x)
+                   && (line_start.x <= x) && (x <= line_end.x)
+                   && (swordStartPoint.y <= y) && ( y <= swordEndPoint.y)
+                   && (line_start.y <= y) && (y<= line_end.y)){
                 return true;
             }else{
                 return false;
             }
         }
 
-        a = (line1_start.y - line1_end.y) / (line1_start.x - line1_end.x);
-        b = line1_start.y - a * line1_start.x;
-        c = (line2_start.y - line2_end.y) / (line2_start.x - line2_end.x);
-        d = line2_start.y - c * line2_start.x;
+        a = (swordStartPoint.y - swordEndPoint.y) / (swordStartPoint.x - swordEndPoint.x);
+        b = swordStartPoint.y - a * swordStartPoint.x;
+        c = (line_start.y - line_end.y) / (line_start.x - line_end.x);
+        d = line_start.y - c * line_start.x;
 
         x=0;
         y=0;
@@ -173,40 +176,44 @@ class Character {
         }
 
 
-        if (line1_start.x <= line1_end.x && line1_start.y <= line1_end.y) {
+        if (swordStartPoint.x <= swordEndPoint.x 
+                && swordStartPoint.y <= swordEndPoint.y) {
 
-            // sword is in first quadrant
-            if ((line1_start.x <= x) && (x <= line1_end.x)
-                   && (line2_start.x <= x) && (x <= line2_end.x)
-                   && (line1_start.y <= y) && ( y <= line1_end.y) 
-                   && (line2_start.y <= y) && (y<= line2_end.y)){
+            /* The sword is in first quadrant  */
+            if ((swordStartPoint.x <= x) && (x <= swordEndPoint.x)
+                   && (line_start.x <= x) && (x <= line_end.x)
+                   && (swordStartPoint.y <= y) && ( y <= swordEndPoint.y) 
+                   && (line_start.y <= y) && (y<= line_end.y)){
                 return true;
             }
-        }else if(line1_end.x < line1_start.x && line1_start.y <= line1_end.y){
+        }else if(swordEndPoint.x < swordStartPoint.x 
+                    && swordStartPoint.y <= swordEndPoint.y){
 
-            // sword is in second quadrant
-            if((line1_end.x <= x) && (x <= line1_start.x)
-                   && (line2_start.x <= x) && (x <= line2_end.x)
-                   && (line1_start.y <= y) && ( y <= line1_end.y)
-                   && (line2_start.y <= y) && (y<= line2_end.y)){
+            /* The sword is in second quadrant  */
+            if((swordEndPoint.x <= x) && (x <= swordStartPoint.x)
+                   && (line_start.x <= x) && (x <= line_end.x)
+                   && (swordStartPoint.y <= y) && ( y <= swordEndPoint.y)
+                   && (line_start.y <= y) && (y<= line_end.y)){
                  return true;
             }
-        }else if(line1_start.x <= line1_end.x && line1_end.y <= line1_start.y){
+        }else if(swordStartPoint.x <= swordEndPoint.x 
+                    && swordEndPoint.y <= swordStartPoint.y){
 
-            // sword is in third quadrant
-            if((line1_start.x <= x) && (x <= line1_end.x)
-                   && (line2_start.x <= x) && (x <= line2_end.x)
-                   && (line1_end.y <= y) && ( y <= line1_start.y)
-                   && (line2_start.y <= y) && (y<= line2_end.y)){
+            /* The sword is in third quadrant  */
+            if((swordStartPoint.x <= x) && (x <= swordEndPoint.x)
+                   && (line_start.x <= x) && (x <= line_end.x)
+                   && (swordEndPoint.y <= y) && ( y <= swordStartPoint.y)
+                   && (line_start.y <= y) && (y<= line_end.y)){
                  return true;
                }
-        }else if(line1_end.x < line1_start.x && line1_end.y < line1_start.y){
+        }else if(swordEndPoint.x < swordStartPoint.x 
+                    && swordEndPoint.y < swordStartPoint.y){
 
-            // sword is in forth quadrant
-            if((line1_end.x <= x) && (x <= line1_start.x) 
-                   && (line2_start.x <= x) && (x <= line2_end.x)
-                   && (line1_end.y <= y) && ( y <= line1_start.y) 
-                   && (line2_start.y <= y) && (y<= line2_end.y)){
+            /* The sword is in forth quadrant  */ 
+            if((swordEndPoint.x <= x) && (x <= swordStartPoint.x) 
+                   && (line_start.x <= x) && (x <= line_end.x)
+                   && (swordEndPoint.y <= y) && ( y <= swordStartPoint.y) 
+                   && (line_start.y <= y) && (y<= line_end.y)){
                  return true;
                }
         }
