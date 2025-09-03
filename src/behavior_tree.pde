@@ -74,12 +74,12 @@ class SequenceNode extends ControlNode {
                 sequenceStatus = NodeStatus.RUNNING;
                 break;
             case FAILURE:
-                  numberExecutedChildren++;
-                  sequenceStatus = NodeStatus.RUNNING;
-                  break;
+                numberExecutedChildren++;
+                sequenceStatus = NodeStatus.RUNNING;
+                break;
             case RUNNING:
-                  sequenceStatus = NodeStatus.RUNNING;
-                  break;
+                sequenceStatus = NodeStatus.RUNNING;
+                break;
         }
         return sequenceStatus;
     }
@@ -94,44 +94,41 @@ class SequenceNode extends ControlNode {
 
 
 class SelectorNode extends ControlNode {
-    int number_children = 0;
-    int number_executed = 0;
+    int numberChildren         = 0;
+    int numberExecutedChildren = 0;
 
     SelectorNode (String nodeName) {
         super(nodeName);
     }
 
     NodeStatus executeChildren() {
-        BehaviorTreeNode process_node;
-        NodeStatus selector_status = null;
-        NodeStatus node_result;
+        BehaviorTreeNode processNode;
+        NodeStatus selectorStatus = null;
+        NodeStatus processResult;
 
-        number_children = this.children.size();
-
-        if (number_executed == number_children) {
-            // reaching the final node means that no node returns SUCCESS
-            selector_status = NodeStatus.FAILURE;
+        numberChildren = this.children.size();
+        if (numberExecutedChildren == numberChildren) {
             return NodeStatus.FAILURE;
-
-        } else {
-
-            process_node = children.get(number_executed);
-            node_result = process_node.evalNode();
-
-            switch (node_result) {
-                case SUCCESS:
-                    selector_status = NodeStatus.SUCCESS;
-                    break;
-                case FAILURE:
-                    number_executed++;
-                    selector_status = NodeStatus.RUNNING;
-                    break;
-                case RUNNING:
-                    selector_status = NodeStatus.RUNNING;
-                    break;
-            }
         }
-        return selector_status;
+
+        // check the child node currently being processed
+        processNode = children.get(numberExecutedChildren);
+
+        // decide selector status depend on the result of the current node.
+        processResult = processNode.evalNode();
+        switch (processResult) {
+            case SUCCESS:
+                selectorStatus = NodeStatus.SUCCESS;
+                break;
+            case FAILURE:
+                numberExecutedChildren++;
+                selectorStatus = NodeStatus.RUNNING;
+                break;
+            case RUNNING:
+                selectorStatus = NodeStatus.RUNNING;
+                break;
+        }
+        return selectorStatus;
     }
 
     @Override
@@ -140,7 +137,6 @@ class SelectorNode extends ControlNode {
         result = executeChildren();
         return result;
     }
-
 }
 
 /* This is a base class for decorator nodes. */
