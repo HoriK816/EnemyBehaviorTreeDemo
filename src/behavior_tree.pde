@@ -217,11 +217,11 @@ class RepeaterNode extends DecoratorNode {
 
 
 class RetryUntilSuccessfulNode extends DecoratorNode {
-    int number_attempt;
+    int numberAttempt;
 
-    RetryUntilSuccessfulNode(String nodeName, int number_attempt) {
+    RetryUntilSuccessfulNode(String nodeName, int numberAttempt) {
         super(nodeName);
-        this.number_attempt =  number_attempt; 
+        this.numberAttempt =  numberAttempt; 
     }
 
     @Override 
@@ -235,14 +235,14 @@ class RetryUntilSuccessfulNode extends DecoratorNode {
                 break;
             case FAILURE:
                 result = NodeStatus.RUNNING;
-                number_attempt--;
+                numberAttempt--;
                 break;
             case RUNNING:
                 result = NodeStatus.RUNNING;
                 break;
         }
 
-        if (number_attempt == 0) {
+        if (numberAttempt == 0) {
             result = NodeStatus.FAILURE;
         }
         return result;
@@ -287,7 +287,7 @@ class LeafNode extends BehaviorTreeNode{
 
 
 class ConditionNode extends LeafNode{
-    boolean is_met = false;
+    boolean isMet = false;
     NodeStatus status;
 
     ConditionNode(String nodeName){
@@ -299,7 +299,7 @@ class ConditionNode extends LeafNode{
         depend on the condition...
     */
     void checkCondition(){
-        if(is_met){
+        if(isMet){
             status =  NodeStatus.SUCCESS;
         }else{
             status =  NodeStatus.FAILURE;

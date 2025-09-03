@@ -31,9 +31,9 @@ class IsShortRange extends ConditionNode{
 
    void judgeDistance(float distance) {
       if (distance < threshold) {
-          is_met = true;
+          isMet = true;
       } else {
-          is_met = false;
+          isMet = false;
       }
    }
 }
@@ -52,9 +52,9 @@ class IsRandomNumberOverThreshold extends ConditionNode{
         int random_number = random_stack.refferStackTop();
 
         if (threshold < random_number) {
-            this.is_met = true;
+            this.isMet = true;
         }else{
-            this.is_met = false;
+            this.isMet = false;
         }
     }
 
@@ -84,9 +84,9 @@ class IsRandomNumberBetweenAandB extends ConditionNode {
         int random_number = random_stack.refferStackTop();
 
         if (min_a <= random_number && random_number < max_b) {
-            this.is_met = true;
+            this.isMet = true;
         } else {
-            this.is_met = false;
+            this.isMet = false;
         }
     }
 
